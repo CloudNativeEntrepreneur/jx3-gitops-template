@@ -1,0 +1,3 @@
+version: 0.11.1
+gitUrl: https://github.com/weaveworks/eksctl.git
+url: https://eksctl.io

@@ -1,0 +1,18 @@
+multibranchPipelineJob('{{ .FullName }}') {
+    branchSources {
+{{- if eq .GitServerURL "https://github.com" }}
+        github {
+            id('{{ .ID }}')
+            scanCredentialsId('tekton-git')
+            repoOwner('{{ .Owner }}')
+            repository('{{ .Repository }}')
+        }
+{{- else }}
+        git {
+            id('{{ .ID }}')
+            credentialsId('tekton-git')
+            remote('{{ .CloneURL }}')
+        }
+{{- end }}
+    }
+}

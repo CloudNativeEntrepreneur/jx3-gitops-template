@@ -1,0 +1,19 @@
+apiVersion: operator.knative.dev/v1alpha1
+kind: KnativeServing
+metadata:
+  name: knative-serving
+  namespace: knative-serving
+spec:
+  config:
+    domain:
+      example.com: ""
+    network:
+      autoTLS: Enabled
+      domainTemplate: |-
+        {{`{{if index .Annotations "custom-hostname" -}}
+          {{- index .Annotations "custom-hostname" -}}
+        {{else -}}
+          {{- .Name}}.{{.Namespace -}}
+        {{end -}}
+        .{{.Domain}}`}}
+      httpProtocol: Redirected

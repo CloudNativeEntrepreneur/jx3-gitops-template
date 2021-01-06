@@ -1,0 +1,23 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: istio-system
+repositories:
+- name: jx3
+  url: https://storage.googleapis.com/jenkinsxio/charts
+releases:
+- chart: ./charts/istio-system
+  version: 1.0.0
+  name: istio-system
+  values:
+  - jx-values.yaml
+- chart: jx3/acme
+  version: 0.0.19
+  name: acme-jx
+  values:
+  - ../../versionStream/charts/jx3/acme-jx/values.yaml.gotmpl
+  - jx-values.yaml
+templates: {}
+renderedvalues: {}

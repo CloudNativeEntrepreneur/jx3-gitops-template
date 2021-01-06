@@ -1,0 +1,4 @@
+version: 2.12.2
+upperLimit: 2.17.0
+gitUrl: https://github.com/helm/helm
+url: https://helm.sh/

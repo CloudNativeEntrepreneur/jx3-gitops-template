@@ -1,0 +1,20 @@
+{{- if eq .Values.jxRequirements.cluster.provider "eks" }}
+autoDiscovery:
+  clusterName: {{ .Values.jxRequirements.cluster.clusterName }}
+  tags:
+  - k8s.io/cluster-autoscaler/enabled
+  - k8s.io/cluster-autoscaler/{{ .Values.jxRequirements.cluster.clusterName }}
+awsRegion: {{ .Values.jxRequirements.cluster.region }}
+image:
+  # will need to change this to 1.15.6 for EKS 1.15
+  tag: v1.14.7
+{{- end }}
+
+rbac:
+  create: true
+{{- if and (hasKey .Values.jxRequirements.cluster "project") (hasKey .Values.jxRequirements.cluster "clusterName") (eq .Values.jxRequirements.cluster.provider "eks") }}
+  serviceAccount:
+    name: cluster-autoscaler
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-cluster-autoscaler-cluster-autoscaler
+{{- end }}

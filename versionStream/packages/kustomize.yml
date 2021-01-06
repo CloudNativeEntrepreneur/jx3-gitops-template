@@ -1,0 +1,4 @@
+version: 3.5.1
+upperLimit: 3.6.0
+gitUrl: https://github.com/kubernetes-sigs/kustomize
+url: https://kustomize.io

@@ -1,0 +1,102 @@
+jxRequirements:
+  ingress:
+    domain: cluster.local
+    namespaceSubDomain: "."
+    tls:
+      enabled: true
+enabled: true
+serviceaccount:
+  enabled: true
+deployment:
+  enabled: true
+probe:
+  path: ""
+restartPolicy: Always
+args:
+- "controller"
+- "build"
+- "--batch-mode"
+- "--git-credentials"
+- "--git-reporting"
+- "--verbose"
+image:
+  repository: gcr.io/jenkinsxio-labs/jxl
+  tag: 0.0.165
+env:
+  GIT_AUTHOR_NAME: "jenkins-x-bot"
+  GIT_AUTHOR_EMAIL: "jenkins-x@googlegroups.com"
+  XDG_CONFIG_HOME: "/home/jenkins"
+clusterrole:
+  enabled: true
+  rules:
+  - apiGroups:
+    - ""
+    resources:
+    - namespaces
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - apiextensions.k8s.io
+    resources:
+    - customresourcedefinitions
+    verbs:
+    - get
+    - create
+    - patch
+    - update
+    - list
+  - apiGroups:
+    - tekton.dev
+    resources:
+    - pipelines
+    - pipelinereources
+    - pipelineruns
+    - tasks
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    verbs:
+    - get
+    - list
+    - watch
+role:
+  enabled: true
+  rules:
+  - apiGroups:
+    - jenkins.io
+    resources:
+    - pipelineactivities
+    - pipelinestructures
+    - sourcerepositories
+    verbs:
+    - list
+    - get
+    - watch
+    - create
+    - update
+    - patch
+  - apiGroups:
+    - jenkins.io
+    resources:
+    - environments
+    - plugins
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - pods/log
+    - secrets
+    verbs:
+    - get
+    - list
+    - watch

@@ -1,0 +1,17 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: istio-operator
+repositories:
+- name: jx-istio
+  url: https://jenkins-x-charts.github.io/istio/
+releases:
+- chart: jx-istio/istio-operator
+  version: 1.7.0
+  name: istio-operator
+  values:
+  - jx-values.yaml
+templates: {}
+renderedvalues: {}

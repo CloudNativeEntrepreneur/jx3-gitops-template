@@ -1,0 +1,14 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: knative-serving
+releases:
+- chart: ./charts/knative-serving
+  version: 1.0.0
+  name: knative-serving
+  values:
+  - jx-values.yaml
+templates: {}
+renderedvalues: {}

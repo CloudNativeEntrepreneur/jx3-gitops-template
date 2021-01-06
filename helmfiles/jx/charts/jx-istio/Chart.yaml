@@ -1,0 +1,4 @@
+apiVersion: v1
+name: jx-istio
+description: Istio Resources for JX namespace
+version: 0.0.1

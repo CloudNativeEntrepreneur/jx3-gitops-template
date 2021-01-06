@@ -1,0 +1,22 @@
+installCRDs: true
+
+global:
+  leaderElection:
+    namespace: cert-manager
+
+cert-manager:
+  enabled: {{ .Values.jxRequirements.ingress.tls.enabled }}
+{{- if and (hasKey .Values.jxRequirements.cluster "project") (hasKey .Values.jxRequirements.cluster "clusterName") (eq .Values.jxRequirements.cluster.provider "eks") }}
+extraArgs:
+  - --issuer-ambient-credentials
+securityContext:
+  enabled: true
+  fsGroup: 1001
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-cert-manager-cert-manager
+{{- else if eq .Values.jxRequirements.cluster.provider "gke" }}
+serviceAccount:
+  annotations:
+    iam.gke.io/gcp-service-account: {{ .Values.jxRequirements.cluster.clusterName }}-dn@{{ .Values.jxRequirements.cluster.project }}.iam.gserviceaccount.com
+{{- end }}

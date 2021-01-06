@@ -1,0 +1,5 @@
+# NOTE THIS IS A VERY OLD VERSION
+version: 2.0.404
+upperLimit: 3.0.0
+gitUrl: https://github.com/jenkins-x/jx.git
+url: https://jenkins-x.io

@@ -1,0 +1,100 @@
+apiVersion: project.jenkins-x.io/v1alpha1
+kind: Quickstarts
+spec:
+  defaultOwner: jenkins-x-quickstarts
+  quickstarts:
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/android-quickstart/zip/d9e925718
+    language: Java
+    name: android-quickstart
+    version: 1.0.0+d9e925718
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/angular-io-quickstart/zip/bec4b999a
+    language: TypeScript
+    name: angular-io-quickstart
+    version: 1.0.0+bec4b999a
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/aspnet-app/zip/ce1da4a8f
+    language: HTML
+    name: aspnet-app
+    version: 1.0.0+ce1da4a8f
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/dlang-http/zip/280f378d2
+    language: D
+    name: dlang-http
+    version: 1.0.0+280f378d2
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/golang-http/zip/068a14d5f
+    language: Go
+    name: golang-http
+    version: 1.0.0+068a14d5f
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/golang-http-from-jenkins-x-yml/zip/ec39bbfac
+    language: Go
+    name: golang-http-from-jenkins-x-yml
+    version: 1.0.0+ec39bbfac
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/jenkins-cwp-quickstart/zip/47fa4d9cd
+    name: jenkins-cwp-quickstart
+    version: 1.0.0+47fa4d9cd
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/jenkins-quickstart/zip/f31f27201
+    language: Groovy
+    name: jenkins-quickstart
+    version: 1.0.0+f31f27201
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/node-http/zip/3ed56e893
+    language: JavaScript
+    name: node-http
+    version: 1.0.0+3ed56e893
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/node-http-watch-pipeline-activity/zip/09c7ed32d
+    language: JavaScript
+    name: node-http-watch-pipeline-activity
+    version: 1.0.0+09c7ed32d
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/open-liberty/zip/c21a1e0bf
+    language: Java
+    name: open-liberty
+    version: 1.0.0+c21a1e0bf
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/php-helloworld/zip/386ed8293
+    language: PHP
+    name: php-helloworld
+    version: 1.0.0+386ed8293
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/python-http/zip/ed258a723
+    language: Python
+    name: python-http
+    version: 1.0.0+ed258a723
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/rails-shopping-cart/zip/2712fbe9e
+    language: Ruby
+    name: rails-shopping-cart
+    version: 1.0.0+2712fbe9e
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/react-quickstart/zip/f1e295591
+    language: JavaScript
+    name: react-quickstart
+    version: 1.0.0+f1e295591
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/rollout-app/zip/953a29100
+    language: HTML
+    name: rollout-app
+    version: 1.0.0+953a29100
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/rust-http/zip/6a2f622ca
+    language: Rust
+    name: rust-http
+    version: 1.0.0+6a2f622ca
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/scala-akka-http-quickstart/zip/d52c41a04
+    language: Scala
+    name: scala-akka-http-quickstart
+    version: 1.0.0+d52c41a04
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/spring-boot-http-gradle/zip/6f0115ab3
+    language: Java
+    name: spring-boot-http-gradle
+    version: 1.0.0+6f0115ab3
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/spring-boot-rest-prometheus/zip/6c43e1d94
+    language: Java
+    name: spring-boot-rest-prometheus
+    version: 1.0.0+6c43e1d94
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/spring-boot-maven-jenkinsfile/zip/aa952a9
+    language: Java
+    name: spring-boot-maven-jenkinsfile
+    version: 1.0.0+aa952a9
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/spring-boot-rest-prometheus-java11/zip/7e487fce2
+    language: Java
+    name: spring-boot-rest-prometheus-java11
+    version: 1.0.0+7e487fce2
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/spring-boot-watch-pipeline-activity/zip/177d75201
+    language: Java
+    name: spring-boot-watch-pipeline-activity
+    version: 1.0.0+177d75201
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/vertx-rest-prometheus/zip/fd180fd76
+    language: Java
+    name: vertx-rest-prometheus
+    version: 1.0.0+fd180fd76

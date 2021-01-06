@@ -1,0 +1,14 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: knative-eventing
+releases:
+- chart: ./charts/knative-eventing
+  version: 1.0.0
+  name: knative-eventing
+  values:
+  - jx-values.yaml
+templates: {}
+renderedvalues: {}

@@ -1,0 +1,4 @@
+component: grafana
+gitUrl: https://github.com/weaveworks/flagger
+namespace: istio-system
+version: 1.4.0

@@ -1,0 +1,39 @@
+ingress:
+  enabled: true
+  annotations:
+    # lets enable basic auth by default
+
+    # type of authentication
+    nginx.ingress.kubernetes.io/auth-type: basic
+    # name of the secret that contains the user/password definitions
+    nginx.ingress.kubernetes.io/auth-secret: jx-basic-auth-htpasswd
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Jenkins X Pipeline Dashboard'
+
+  hosts:
+  - "dashboard{{ .Values.jxRequirements.ingress.namespaceSubDomain | default "." }}{{ .Values.jxRequirements.ingress.domain | default "cluster.local" }}"
+
+  tls:
+    enabled: {{ .Values.jxRequirements.ingress.tls.enabled }}
+    secrets:
+{{- if .Values.jxRequirements.ingress.tls.production }}
+      "tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-p": {}
+{{- else }}
+      "tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-s": {}
+{{- end }}
+
+{{- if eq .Values.jxRequirements.cluster.provider "eks" }}
+pod:
+  env:
+    AWS_REGION: {{ .Values.jxRequirements.cluster.region }}
+{{- end }}
+
+serviceAccount:
+  annotations:
+{{- if eq .Values.jxRequirements.cluster.provider "gke" }}
+    iam.gke.io/gcp-service-account: {{ .Values.jxRequirements.cluster.clusterName }}-jxui@{{ .Values.jxRequirements.cluster.project }}.iam.gserviceaccount.com
+{{- else if eq .Values.jxRequirements.cluster.provider "eks" }}
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-jx-pipelines-visualizer
+{{- else }}
+    installed-by: jenkins-x
+{{- end }}

@@ -1,0 +1,4 @@
+version: 1.13.2
+upperLimit: 1.19.0
+gitUrl: https://github.com/kubernetes/kubectl.git
+url: https://github.com/kubernetes/kubectl

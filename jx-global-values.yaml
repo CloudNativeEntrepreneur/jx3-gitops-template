@@ -1,0 +1,4 @@
+# optional list of image pull secrets to use to pull images
+jx:
+  imagePullSecrets:
+    - tekton-container-registry-auth

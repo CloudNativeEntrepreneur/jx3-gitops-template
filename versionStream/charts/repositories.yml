@@ -1,0 +1,41 @@
+repositories:
+- prefix: banzaicloud-stable
+  urls:
+  - https://kubernetes-charts.banzaicloud.com
+- prefix: bitnami
+  urls:
+  - https://charts.bitnami.com/bitnami
+- prefix: cdf
+  urls:
+  - https://cdfoundation.github.io/tekton-helm-chart
+- prefix: external-secrets
+  urls:
+  - https://external-secrets.github.io/kubernetes-external-secrets
+- prefix: flagger
+  urls:
+  - https://flagger.app
+- prefix: gloo
+  urls:
+  - https://storage.googleapis.com/solo-public-helm
+- prefix: kuberhealthy
+  urls:
+  - https://comcast.github.io/kuberhealthy/helm-repos
+- prefix: jenkins-x
+  urls:
+  - https://storage.googleapis.com/chartmuseum.jenkins-x.io
+  - http://chartmuseum.jenkins-x.io
+- prefix: jenkinsci
+  urls:
+  - https://charts.jenkins.io
+- prefix: jetstack
+  urls:
+  - https://charts.jetstack.io
+- prefix: jx3
+  urls:
+  - https://storage.googleapis.com/jenkinsxio/charts
+- prefix: presslabs
+  urls:
+  - https://presslabs.github.io/charts
+- prefix: stable
+  urls:
+  - https://charts.helm.sh/stable

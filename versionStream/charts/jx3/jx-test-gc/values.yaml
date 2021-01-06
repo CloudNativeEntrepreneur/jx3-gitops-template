@@ -1,0 +1,27 @@
+cronjob:
+  enabled: true
+  schedule: "0 * * * *"
+role:
+  enabled: true
+  rules:
+  - apiGroups:
+    - jxtest.jenkins.io
+    resources:
+    - testruns
+    verbs:
+    - '*'
+clusterrole:
+  enabled: true
+  rules:
+  - apiGroups:
+    - ""
+    resources:
+    - 'secrets'
+    verbs:
+    - 'list'
+args:
+- test
+- gc
+serviceaccount:
+  enabled: true
+  customName: tekton-bot

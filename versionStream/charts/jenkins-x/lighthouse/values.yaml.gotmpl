@@ -1,0 +1,52 @@
+enabled: true
+
+engines:
+  tekton: true
+
+hmacToken: "{{ .Values.jx.secrets.hmacToken | default "123abc" }}"
+
+git:
+  kind: {{ .Values.jxRequirements.cluster.gitKind | default "github" }}
+  name: {{ .Values.jxRequirements.cluster.gitName | default "github" }}
+  server: {{ .Values.jxRequirements.cluster.gitServer | default "https://github.com" }}
+
+service:
+  name: hook
+  
+replicaCount: 2
+
+tektoncontroller:
+  dashboardURL: "http://dashboard{{ .Values.jxRequirements.ingress.namespaceSubDomain }}{{ .Values.jxRequirements.ingress.domain }}"
+  dashboardTemplate: "namespaces/{{"{{"}} .Namespace {{"}}"}}/pipelineruns/{{"{{"}} .PipelineRun {{"}}"}}"
+
+env:
+  JX_DEFAULT_IMAGE: gcr.io/jenkinsxio/builder-maven:2.1.142-761
+  LIGHTHOUSE_DASHBOARD_TEMPLATE: "namespaces/{{"{{"}} .Namespace {{"}}"}}/pipelineruns/{{"{{"}} .PipelineRun {{"}}"}}"
+  DEFAULT_PIPELINE_RUN_SERVICE_ACCOUNT: tekton-bot
+  DEFAULT_PIPELINE_RUN_TIMEOUT: "2h0m0s"
+  FILE_BROWSER: "git"
+
+image:
+  repository: gcr.io/jenkinsxio/lighthouse
+
+vault:
+{{- if eq .Values.jxRequirements.secretStorage "vault" }}
+  enabled: true
+{{- else }}
+  enabled: false
+{{- end }}
+
+{{- if hasKey .Values.jxRequirements.cluster "clusterName" }}
+clusterName: "{{ .Values.jxRequirements.cluster.clusterName }}"
+{{- end }}
+
+{{- if hasKey .Values.jxRequirements "pipelineUser" }}
+  {{- if hasKey .Values.jxRequirements.pipelineUser "username" }}
+user: "{{ .Values.jxRequirements.pipelineUser.username }}"
+  {{- end }}
+{{- end }}
+
+oauthToken: "{{ .Values.jx.secrets.pipelineUser.token }}"
+
+webhooks:
+  customDeploymentTriggerCommand: "jx"

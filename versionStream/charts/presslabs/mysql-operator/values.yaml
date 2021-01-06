@@ -1,0 +1,3 @@
+orchestrator:
+  # lets disable the chart generating a dynamic secret sha annotation on each run
+  topologyPassword: dummy

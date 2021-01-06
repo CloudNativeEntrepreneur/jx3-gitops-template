@@ -1,0 +1,13 @@
+gcactivities:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+gcpods:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+istio:
+  enabled: true
+  gateway:
+    additionalHosts:
+    - dashboard-jx.example.com

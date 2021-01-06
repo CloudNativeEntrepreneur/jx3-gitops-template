@@ -1,0 +1,20 @@
+{
+  "auths":{
+    "ghcr.io": {
+        "auth": "Z2l0b3BlcmF0b3JVc2VybmFtZTpnaXRvcGVyYXRvcnBhc3N3b3Jk",
+        "email": ""
+    },
+    "https://index.docker.io/v1/": {
+        "auth": "",
+        "email": "jenkins-x@googlegroups.com"
+    }
+  },
+
+  "credHelpers": {
+      "gcr.io": "gcr",
+      "us.gcr.io": "gcr",
+      "eu.gcr.io": "gcr",
+      "asia.gcr.io": "gcr",
+      "staging-k8s.gcr.io": "gcr"
+  }
+}

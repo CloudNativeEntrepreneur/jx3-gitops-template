@@ -1,0 +1,35 @@
+apiVersion: core.jenkins-x.io/v4beta1
+kind: Requirements
+spec:
+  autoUpdate:
+    enabled: false
+    schedule: ""
+  cluster:
+    chartRepository: http://bucketrepo.jx.svc.cluster.local/bucketrepo/charts
+    clusterName: kind
+    devEnvApprovers:
+    - todo
+    environmentGitOwner: todo
+    gitKind: github
+    gitName: github
+    gitServer: https://github.com
+    provider: kubernetes
+    registry: ghcr.io
+  environments:
+  - key: dev
+  - key: staging
+  - key: production
+  ingress:
+    domain: ""
+    kind: istio
+    externalDNS: false
+    namespaceSubDomain: -jx.
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  repository: bucketrepo
+  secretStorage: vault
+  vault: {}
+  terraform: true
+  webhook: lighthouse

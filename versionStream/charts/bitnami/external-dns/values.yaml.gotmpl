@@ -1,0 +1,46 @@
+sources:
+- ingress
+{{- if eq .Values.jxRequirements.cluster.provider "eks" }}
+provider: aws
+aws:
+  region: {{ .Values.jxRequirements.cluster.region }}
+podSecurityContext:
+  fsGroup: 65534
+{{- else if eq .Values.jxRequirements.cluster.provider "gke" }}
+provider: google
+google:
+#  serviceAccountSecret: external-dns-gcp-sa
+{{- if hasKey .Values.jxRequirements.cluster "project" }}
+  project: "{{ .Values.jxRequirements.cluster.project }}"
+{{- end }}
+{{- else if eq .Values.jxRequirements.cluster.provider "aks" }}
+provider: azure
+azure:
+  resourceGroup: {{ .Values.jxRequirements.cluster.azure.dns.resourceGroup }}
+  tenantId: {{ .Values.jxRequirements.cluster.azure.dns.tenantId }}
+  subscriptionId: {{ .Values.jxRequirements.cluster.azure.dns.subscriptionId }}
+  useManagedIdentityExtension: true
+{{- end }}
+
+rbac:
+  create: true
+{{- if eq .Values.jxRequirements.cluster.provider "gke" }}
+serviceAccount:
+  annotations:
+    iam.gke.io/gcp-service-account: {{ .Values.jxRequirements.cluster.clusterName }}-dn@{{ .Values.jxRequirements.cluster.project }}.iam.gserviceaccount.com
+{{- else if eq .Values.jxRequirements.cluster.provider "eks" }}
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-external-dns
+{{- end }}
+
+domainFilters:
+- {{ .Values.jxRequirements.ingress.domain }}
+{{- range $key, $val := .Values.jxRequirements.environments }}
+{{- if hasKey $val "ingress" }}
+{{- if $val.ingress.domain }}
+- "{{ $val.ingress.domain }}"
+{{- end }}
+{{- end }}
+{{- end }}
+

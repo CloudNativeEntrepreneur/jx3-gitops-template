@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jx-install-config
+  namespace: jx
+data:
+  kubeProvider: gke

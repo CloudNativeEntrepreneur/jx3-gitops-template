@@ -1,0 +1,5 @@
+serviceaccount:
+  annotations:
+{{- if eq "gke" .Values.jxRequirements.cluster.provider }}
+    iam.gke.io/gcp-service-account: {{ .Values.jxRequirements.cluster.clusterName }}-bc@{{ .Values.jxRequirements.cluster.project }}.iam.gserviceaccount.com
+{{- end }}

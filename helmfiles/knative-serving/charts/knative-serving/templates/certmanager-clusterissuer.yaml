@@ -1,0 +1,35 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-knative
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: "{{ .Values.jxRequirements.ingress.tls.email }}"
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-knative
+    solvers:
+      # ACME DNS-01 provider configurations
+    - dns01:
+{{- if eq .Values.jxRequirements.cluster.provider "gke" }}
+        cloudDNS:
+          # The project in which to update the DNS zone
+          project: "{{ .Values.jxRequirements.cluster.project }}"
+{{- if .Values.secretName }}
+          # A secretKeyRef to a google cloud json service account
+          serviceAccountSecretRef:
+            name: {{ .Values.secretName }}
+            key: credentials.json
+{{- end }}
+{{- end }}
+{{- if eq .Values.jxRequirements.cluster.provider "eks" }}
+        route53:
+          region: {{ .Values.jxRequirements.cluster.region }}
+{{- end }}
+{{- if eq .Values.jxRequirements.cluster.provider "aks" }}
+        azureDNS:
+          subscriptionID: {{ .Values.jxRequirements.cluster.azure.dns.subscriptionId }}
+          resourceGroupName: {{ .Values.jxRequirements.cluster.azure.dns.resourceGroup }}
+          hostedZoneName: {{ .Values.jxRequirements.ingress.domain }}
+{{- end }}

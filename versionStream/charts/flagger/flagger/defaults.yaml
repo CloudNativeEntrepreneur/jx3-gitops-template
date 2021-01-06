@@ -1,0 +1,4 @@
+component: flagger
+gitUrl: https://github.com/weaveworks/flagger
+namespace: istio-system
+version: 0.27.0

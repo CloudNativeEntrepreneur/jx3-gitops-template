@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env: dev
+    team: jx
+    certmanager.k8s.io/disable-validation: "true"
+  name: jx

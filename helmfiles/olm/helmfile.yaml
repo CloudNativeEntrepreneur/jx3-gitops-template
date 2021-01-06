@@ -1,0 +1,14 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: olm
+releases:
+- chart: ./charts/olm
+  version: 0.17.0
+  name: olm
+  values:
+  - jx-values.yaml
+templates: {}
+renderedvalues: {}

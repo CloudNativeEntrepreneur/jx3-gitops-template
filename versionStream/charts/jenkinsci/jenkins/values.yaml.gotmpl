@@ -1,0 +1,55 @@
+controller:
+  JCasC:
+    enabled: true
+
+  # allow Jobs via XML
+  enableXmlConfig: true
+
+  # By default, the configMap is only used to set the initial config the first time
+  # that the chart is installed.  Setting `overwriteConfig` to `true` will overwrite
+  # the jenkins config with the contents of the configMap every time the pod starts.
+  # This will also overwrite all init scripts
+  overwriteConfig: true
+
+  # By default, the Jobs Map is only used to set the initial jobs the first time
+  # that the chart is installed.  Setting `overwriteJobs` to `true` will overwrite
+  # the jenkins jobs configuration with the contents of Jobs every time the pod starts.
+  overwriteJobs: true
+
+  # List of plugins to be install during Jenkins controller start
+  # lets upgrade git for github-branch-source
+  installPlugins:
+    - kubernetes:1.27.6
+    - workflow-aggregator:2.6
+    - git:4.5.1
+    - configuration-as-code:1.46
+
+  additionalPlugins:
+  # enable the job DSL so we can use JCasC and GitOps to populate jobs
+  - job-dsl:1.77
+
+  # allow github multi branch projects to be used
+  - github-branch-source:2.9.2
+
+  # allow jenkins to get credentials from kubernetes secrets & support External Secrets for vault / cloud secret managers
+  - kubernetes-credentials-provider:0.15
+
+  # jobs get reported as PipelineActivity resources so they appear in the jx UIs like octant
+  - jx-resources:1.0.38
+
+
+  ingress:
+    enabled: true
+{{- if .Values.jxRequirements.ingress.domain }}
+    hostName: "jenkins{{ .Values.jxRequirements.ingress.namespaceSubDomain | default "." }}{{ .Values.jxRequirements.ingress.domain }}"
+{{- end }}
+  sidecars:
+    configAutoReload:
+      enabled: true
+rbac:
+  create: true
+
+  # lets allow jenkins to read secrets in its namespace
+  # by default so that we can use Kubernetes External Secrets to populate kubernetes Secretes for Jenkins
+  # which are then converted to Jenkins Credentials via https://plugins.jenkins.io/kubernetes-credentials-provider/
+  readSecrets: true

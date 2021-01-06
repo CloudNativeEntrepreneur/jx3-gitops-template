@@ -1,0 +1,17 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: rbac-manager
+repositories:
+- name: fairwinds-stable
+  url: https://charts.fairwinds.com/stable
+releases:
+- chart: fairwinds-stable/rbac-manager
+  version: 1.7.0
+  name: rbac-manager
+  values:
+  - jx-values.yaml
+templates: {}
+renderedvalues: {}

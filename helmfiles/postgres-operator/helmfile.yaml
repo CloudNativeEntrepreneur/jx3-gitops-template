@@ -1,0 +1,24 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: postgres-operator
+repositories:
+- name: zalando-pgo
+  url: https://raw.githubusercontent.com/zalando/postgres-operator/master/charts/postgres-operator/
+- name: zalando-pgo-ui
+  url: https://raw.githubusercontent.com/zalando/postgres-operator/master/charts/postgres-operator-ui/
+releases:
+- chart: zalando-pgo/postgres-operator
+  version: 1.6.0
+  name: postgres-operator
+  values:
+  - jx-values.yaml
+- chart: zalando-pgo-ui/postgres-operator-ui
+  version: 1.6.0
+  name: postgres-operator-ui
+  values:
+  - jx-values.yaml
+templates: {}
+renderedvalues: {}

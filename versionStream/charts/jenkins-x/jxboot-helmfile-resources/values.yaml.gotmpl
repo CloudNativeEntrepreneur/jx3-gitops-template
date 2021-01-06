@@ -1,0 +1,189 @@
+versions:
+  jxl: 0.0.130
+
+sourceRepositoriesEnvKey: true
+
+pipeline:
+  auth:
+    git:
+      url: {{ .Values.jxRequirements.cluster.gitServer | default "https://github.com" }}
+  serviceAccount:
+{{- if and (hasKey .Values.jxRequirements.cluster "project") (hasKey .Values.jxRequirements.cluster "clusterName") (eq .Values.jxRequirements.cluster.provider "eks") }}
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-tekton-bot
+{{- else if eq .Values.jxRequirements.cluster.provider "gke" }}
+    annotations:
+      iam.gke.io/gcp-service-account: {{ .Values.jxRequirements.cluster.clusterName }}-tekton@{{ .Values.jxRequirements.cluster.project }}.iam.gserviceaccount.com
+{{- else }}
+    annotations: {}
+{{- end }}
+
+
+{{- if eq .Values.jxRequirements.cluster.provider "eks" }}
+podTemplates:
+  agent:
+    dockerConfig: true
+{{- else if eq .Values.jxRequirements.cluster.provider "aks" }}
+podTemplates:
+  agent:
+    dockerConfig: true
+{{- end }}
+
+secrets:
+{{- if eq .Values.jxRequirements.cluster.provider "eks" }}
+  {{- if hasKey .Values.jxRequirements.cluster "registry" }}
+    {{- if .Values.jxRequirements.cluster.registry }}
+  dockerConfig: |-
+    {
+      "credHelpers": {
+        "{{ .Values.jxRequirements.cluster.registry }}": "ecr-login"
+      }
+    }
+    {{- end }}
+  {{- else }}
+  dockerConfig: |-
+    {
+      "credsStore": "ecr-login"
+    }
+  {{- end }}
+{{- else if eq .Values.jxRequirements.cluster.provider "aks" }}
+  {{- if hasKey .Values.jxRequirements.cluster "registry" }}
+    {{- if .Values.jxRequirements.cluster.registry }}
+  dockerConfig: |-
+    {
+      "credHelpers": {
+        "{{ .Values.jxRequirements.cluster.registry }}": "acr-env"
+      }
+    }
+    {{- end }}
+  {{- else }}
+  dockerConfig: |-
+    {
+      "credsStore": "acr"
+    }
+  {{- end }}
+{{- end }}
+
+  mavenSettings: |-
+    <settings>
+        <localRepository>/home/jenkins/.mvnrepository</localRepository>
+        <!--This sends everything else to /public -->
+    {{- if and (hasKey .Values.jxRequirements "repository") (eq .Values.jxRequirements.repository "bucketrepo") }}
+          <mirrors>
+              <mirror>
+                  <id>bucketrepo</id>
+                  <name>bucketrepo mirror</name>
+                  <mirrorOf>*</mirrorOf>
+                  <url>http://bucketrepo/bucketrepo/</url>
+              </mirror>
+            </mirrors>
+    {{- else if and (hasKey .Values.jxRequirements "repository") (eq .Values.jxRequirements.repository "none") }}
+          <mirrors>
+            <mirror>
+              <id>central</id>
+              <name>US Central</name>
+              <url>https://repo.maven.apache.org/maven2</url>
+              <mirrorOf>central</mirrorOf>
+            </mirror>
+            <mirror>
+              <id>UK</id>
+              <name>UK Central</name>
+              <url>https://uk.maven.org/maven2</url>
+              <mirrorOf>central</mirrorOf>
+            </mirror>
+          </mirrors>
+    {{- else }}
+          <mirrors>
+            <mirror>
+                <id>nexus</id>
+                <name>nexus mirror</name>
+                <mirrorOf>external:*</mirrorOf>
+                <url>http://nexus/repository/maven-group/</url>
+            </mirror>
+          </mirrors>
+    {{- end }}
+
+        <!-- lets disable the download progress indicator that fills up logs -->
+        <interactiveMode>false</interactiveMode>
+
+        <servers>
+            <server>
+                <id>local-nexus</id>
+                <username>{{ .Values.jx.secrets.adminUser.username }}</username>
+                <password>{{ .Values.jx.secrets.adminUser.password }}</password>
+            </server>
+            <server>
+                <id>nexus</id>
+                <username>{{ .Values.jx.secrets.adminUser.username }}</username>
+                <password>{{ .Values.jx.secrets.adminUser.password }}</password>
+            </server>
+            <server>
+                <id>docker.io</id>
+            </server>
+        </servers>
+
+        <profiles>
+            <profile>
+                <id>nexus</id>
+                <properties>
+    {{- if and (hasKey .Values.jxRequirements "repository") (eq .Values.jxRequirements.repository "bucketrepo") }}
+                  <altDeploymentRepository>local-nexus::default::http://bucketrepo/bucketrepo/deploy/maven-snapshots/</altDeploymentRepository>
+                  <altReleaseDeploymentRepository>local-nexus::default::http://bucketrepo/bucketrepo/deploy/maven-releases/</altReleaseDeploymentRepository>
+                  <altSnapshotDeploymentRepository>local-nexus::default::http://bucketrepo/bucketrepo/deploy/maven-snapshots/</altSnapshotDeploymentRepository>
+    {{- else if and (hasKey .Values.jxRequirements "repository") (eq .Values.jxRequirements.repository "none") }}
+    {{- else }}
+                  <altDeploymentRepository>local-nexus::default::http://nexus/repository/maven-snapshots/</altDeploymentRepository>
+                  <altReleaseDeploymentRepository>local-nexus::default::http://nexus/repository/maven-releases/</altReleaseDeploymentRepository>
+                  <altSnapshotDeploymentRepository>local-nexus::default::http://nexus/repository/maven-snapshots/</altSnapshotDeploymentRepository>
+    {{- end }}
+                </properties>
+
+                <repositories>
+                    <repository>
+                        <id>central</id>
+                        <url>http://central</url>
+                        <releases><enabled>true</enabled></releases>
+                        <snapshots><enabled>true</enabled></snapshots>
+                    </repository>
+                </repositories>
+                <pluginRepositories>
+                    <pluginRepository>
+                        <id>central</id>
+                        <url>http://central</url>
+                        <releases><enabled>true</enabled></releases>
+                        <snapshots><enabled>true</enabled></snapshots>
+                    </pluginRepository>
+                </pluginRepositories>
+            </profile>
+            <profile>
+                <id>repo.jenkins-ci.org</id>
+                <properties>
+                    <altDeploymentRepository>repo.jenkins-ci.org::default::https://repo.jenkins-ci.org/releases/</altDeploymentRepository>
+                    <altReleaseDeploymentRepository>repo.jenkins-ci.org::default::https://repo.jenkins-ci.org/releases/</altReleaseDeploymentRepository>
+                    <altSnapshotDeploymentRepository>repo.jenkins-ci.org::default::https://repo.jenkins-ci.org/snapshots/</altSnapshotDeploymentRepository>
+                </properties>
+
+            </profile>
+            <profile>
+                <id>maven.jenkins-ci.org</id>
+                <properties>
+                    <altDeploymentRepository>maven.jenkins-ci.org::default::https://maven.jenkins-ci.org/releases/</altDeploymentRepository>
+                    <altReleaseDeploymentRepository>maven.jenkins-ci.org::default::https://maven.jenkins-ci.org/releases/</altReleaseDeploymentRepository>
+                    <altSnapshotDeploymentRepository>maven.jenkins-ci.org::default::https://maven.jenkins-ci.org/snapshots/</altSnapshotDeploymentRepository>
+                </properties>
+
+            </profile>
+            <profile>
+                <id>release</id>
+                <properties>
+                    <gpg.executable>gpg</gpg.executable>
+                    <!-- TODO use: .Values.jx.secrets.gpg.passphrase when it is always populated -->
+                    <gpg.passphrase></gpg.passphrase>
+                </properties>
+            </profile>
+        </profiles>
+
+        <activeProfiles>
+            <activeProfile>nexus</activeProfile>
+        </activeProfiles>
+    </settings>

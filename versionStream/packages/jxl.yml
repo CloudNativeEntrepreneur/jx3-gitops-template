@@ -1,0 +1,4 @@
+version: 0.0.208
+upperLimit: 1.0.0
+gitUrl: https://github.com/jenkins-x-labs/jxl
+url: https://jenkins-x.io/docs/labs/jxl/
