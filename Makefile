@@ -27,4 +27,4 @@ download-grafana-istio-dashboards:
 	./scripts/grafana/find-istio-dashboards.sh
 
 verify: dev-ns verify-ingress
-	jx gitops webhook update --endpoint=https://$(kubectl get virtualservice hook -o json | jq ".spec.hosts[0]")/hook --warn-on-fail
+	jx gitops webhook update --endpoint=https://$(kubectl get virtualservice hook -o json | jq -r ".spec.hosts[0]")/hook --warn-on-fail
