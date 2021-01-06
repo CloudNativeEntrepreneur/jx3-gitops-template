@@ -12,6 +12,8 @@ This is a work in progress... There are still some pending features:
 1. Strimzi Kafka Operator
 1. Strimzi Kafka cluster to back knative-eventing
 
+** After forking, do a global search for "example.com" - making these variables is another todo :)
+
 # What this template comes with
 
 ## helmfiles/cert-manager
