@@ -9,7 +9,7 @@ repositories:
   url: https://cdfoundation.github.io/tekton-helm-chart
 releases:
 - chart: cdf/tekton-pipeline
-  version: 0.19.0
+  version: 0.19.1
   name: tekton-pipeline
   values:
   - ../../versionStream/charts/cdf/tekton-pipeline/values.yaml.gotmpl
