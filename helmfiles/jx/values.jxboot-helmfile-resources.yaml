@@ -8,6 +8,6 @@ gcpods:
 
 istio:
   enabled: true
+  createGateway: false
   gateway:
-    additionalHosts:
-    - dashboard-jx.example.com
+    name: istio-system/wildcard-jx-example-com

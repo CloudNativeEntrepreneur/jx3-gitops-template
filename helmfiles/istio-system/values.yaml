@@ -1,4 +1,5 @@
 domain: example.com
 subdomains:
+- jx
 - preview
 - staging
