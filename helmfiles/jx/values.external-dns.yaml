@@ -1,4 +1,7 @@
 sources:
 - service
-- ingress
-- istio-gateway
+domainFilters:
+- example.com
+- jx.example.com
+- staging.example.com
+- preview.example.com

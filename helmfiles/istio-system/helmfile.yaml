@@ -9,10 +9,11 @@ repositories:
   url: https://storage.googleapis.com/jenkinsxio/charts
 releases:
 - chart: ./charts/istio-system
-  version: 1.0.0
+  version: 1.1.0
   name: istio-system
   values:
   - jx-values.yaml
+  - values.yaml
 - chart: jx3/acme
   version: 0.0.19
   name: acme-jx

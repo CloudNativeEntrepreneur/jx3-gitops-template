@@ -1,9 +1,11 @@
+{{- $domain  := .Values.domain -}}
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
   name: istio-main
 spec:
   profile: default
+  tag: 1.8.1
   values:
     global:
       proxy:
@@ -19,7 +21,9 @@ spec:
         k8s:
           serviceAnnotations:
             service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-            external-dns.alpha.kubernetes.io/hostname: '*.{{ .Values.jxRequirements.ingress.domain }}'
+            external-dns.alpha.kubernetes.io/hostname: >-
+              *.{{ .Values.jxRequirements.ingress.domain }}
+              {{- range $subdomain := .Values.subdomains }},*.{{ $subdomain }}.{{ $domain }}{{- end }},auth.example.com
       - name: cluster-local-gateway
         enabled: true
         label:

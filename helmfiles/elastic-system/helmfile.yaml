@@ -1,0 +1,23 @@
+filepath: ""
+environments:
+  default:
+    values:
+    - jx-values.yaml
+namespace: elastic-system
+repositories:
+- name: elastic
+  url: https://helm.elastic.co
+releases:
+- chart: ./charts/elastic-system-istio
+  version: 1.0.0
+  name: elastic-system-istio
+  values:
+  - jx-values.yaml
+- chart: elastic/eck-operator
+  version: 1.3.1
+  name: eck-operator
+  values:
+  - jx-values.yaml
+  - values.elastic.yaml
+templates: {}
+renderedvalues: {}

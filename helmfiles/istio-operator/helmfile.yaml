@@ -13,5 +13,6 @@ releases:
   name: istio-operator
   values:
   - jx-values.yaml
+  - values.yaml
 templates: {}
 renderedvalues: {}

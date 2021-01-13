@@ -23,7 +23,7 @@ releases:
   - jx-values.yaml
   - values.external-dns.yaml
 - chart: jenkins-x/jxboot-helmfile-resources
-  version: 1.0.23
+  version: 1.0.24
   name: jxboot-helmfile-resources
   values:
   - ../../versionStream/charts/jenkins-x/jxboot-helmfile-resources/values.yaml.gotmpl
@@ -36,7 +36,7 @@ releases:
   - ../../versionStream/charts/jx3/jenkins-x-crds/values.yaml.gotmpl
   - jx-values.yaml
 - chart: jx3/jx-pipelines-visualizer
-  version: 0.0.62
+  version: 0.0.68
   name: jx-pipelines-visualizer
   values:
   - ../../versionStream/charts/jx3/jx-pipelines-visualizer/values.yaml.gotmpl
@@ -56,7 +56,7 @@ releases:
   - jx-values.yaml
   - values.lighthouse.yaml
 - chart: jx3/jx-build-controller
-  version: 0.0.20
+  version: 0.0.21
   name: jx-build-controller
   values:
   - ../../versionStream/charts/jx3/jx-build-controller/values.yaml.gotmpl

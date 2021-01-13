@@ -1,0 +1,31 @@
+{{- $domain  := .Values.domain -}}
+{{- $istioApiVersion  := .Values.istio.apiVersion -}}
+{{- range $subdomain := .Values.subdomains }}
+---
+apiVersion: {{ $istioApiVersion }}
+kind: Gateway
+metadata:
+  name: "wildcard-{{ $subdomain | replace "." "-" }}-{{ $domain | replace "." "-" }}"
+spec:
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "*.{{ $subdomain }}.{{ $domain }}"
+    port:
+      number: 80
+      name: http
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - "*.{{ $subdomain }}.{{ $domain }}"
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      credentialName: "tls-wildcard-{{ $subdomain | replace "." "-" }}-{{ $domain | replace "." "-" }}"
+      mode: SIMPLE
+{{- end }}

@@ -1,0 +1,10 @@
+apiVersion: keycloak.org/v1alpha1
+kind: Keycloak
+metadata:
+  name: auth
+  labels:
+    app: auth
+spec:
+  instances: 3
+  externalAccess:
+    enabled: False

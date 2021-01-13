@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Istio config for elastic-system namespace
+name: elastic-system-istio
+version: 1.0.0
