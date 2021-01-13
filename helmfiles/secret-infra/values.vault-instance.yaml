@@ -1,5 +1,2 @@
-bankVaultsImage: banzaicloud/bank-vaults:1.10.0
-image: vault:1.6.1
-
 ingress:
   enabled: false
