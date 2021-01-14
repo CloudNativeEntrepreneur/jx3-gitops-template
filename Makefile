@@ -1,5 +1,23 @@
 include versionStream/src/Makefile.mk
 
+AWS_PROFILE?=
+SECRET_DIR?=secret
+
+encrypt-secrets:
+	AWS_PROFILE=$(AWS_PROFILE) \
+	SECRET_DIR=$(SECRET_DIR) \
+	./scripts/secrets/encrypt.sh
+
+decrypt-secrets:
+	AWS_PROFILE=$(AWS_PROFILE) \
+	SECRET_DIR=$(SECRET_DIR) \
+	./scripts/secrets/decrypt.sh
+
+sync-secrets:
+	AWS_PROFILE=$(AWS_PROFILE) \
+	SECRET_DIR=$(SECRET_DIR) \
+	./scripts/secrets/sync.sh
+
 download-olm:
 	mkdir -p .tmp && cd .tmp && curl -L https://github.com/operator-framework/operator-lifecycle-manager/archive/v0.17.0.tar.gz | tar zx
 	mv .tmp/operator-lifecycle-manager-0.17.0/deploy/chart/* helmfiles/olm/charts/olm
