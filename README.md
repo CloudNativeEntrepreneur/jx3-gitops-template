@@ -71,3 +71,90 @@ Vault to store secrets, Kubernetes External Secrets to use them, and Pusher Wave
 ## tekton-pipelines
 
 Tekton, which JX uses to run pipelines.
+
+# Secrets
+
+## Decrypt Existing Secrets
+
+```
+make decrypt-secrets
+```
+
+To Decrypt only a subset of secrets, use `SECRET_DIR`
+
+```
+SECRET_DIR=secret-encrypted/monitor make decrypt-secrets
+```
+
+## Encrypt Existing Secrets
+
+```
+make encrypt-secrets
+```
+
+To Encrypt only a subset of secrets, use `SECRET_DIR`
+
+```
+SECRET_DIR=secret/monitor make encrypt-secrets
+```
+
+
+## Sync Existing Secrets
+
+```
+make sync-secrets
+```
+
+To Sync only a subset of secrets, use `SECRET_DIR`
+
+```
+SECRET_DIR=secret/monitor make sync-secrets
+```
+
+TODO: In a future version syncing will be done in the pipeline automatically
+
+## Connecting to Vault
+
+From https://jenkins-x.io/v3/admin/guides/secrets/vault/
+
+In a terminal, run:
+
+```bash
+jx secret vault portforward
+```
+
+Then, in a second terminal
+
+```bash
+export VAULT_TOKEN=$(kubectl get secrets vault-unseal-keys  -n secret-infra -o jsonpath={.data.vault-root} | base64 --decode)
+
+# Tell the CLI that the Vault Cert is signed by a custom CA
+kubectl get secret vault-tls -n secret-infra -o jsonpath="{.data.ca\.crt}" | base64 --decode > $PWD/secret/vault/vault-ca.crt
+export VAULT_CACERT=$PWD/secret/vault/vault-ca.crt
+
+# Tell the CLI where Vault is listening (the certificate has 127.0.0.1 as well as alternate names)
+export VAULT_ADDR=https://127.0.0.1:8200
+```
+
+You can now use the Vault CLI or Safe:
+
+Vault CLI:
+
+```bash
+# Now we can use the vault CLI to list/read/write secrets...
+                                           
+# List all the current secrets
+vault kv list secret
+
+# Lets store a secert
+vault kv put secret/mything foo=bar whatnot=cheese
+```
+
+Safe:
+
+```bash
+safe ls
+safe ls secret
+
+safe get secret/jx/adminUser:password
+```
