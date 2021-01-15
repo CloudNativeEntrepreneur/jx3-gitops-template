@@ -1,0 +1,16 @@
+{{- $domain  := .Values.domain -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "tls-wildcard-{{ $domain | replace "." "-" }}"
+  labels:
+    jenkins.io/letsencrypt-service: production
+spec:
+  secretName: "tls-wildcard-{{ $domain | replace "." "-" }}"
+  issuerRef:
+    name: "wildcard-{{ $domain | replace "." "-" }}"
+    kind: ClusterIssuer
+  commonName: "*.{{ $domain }}"
+  dnsNames:
+  - "*.{{ $domain }}"
+  - "{{ $domain }}"
