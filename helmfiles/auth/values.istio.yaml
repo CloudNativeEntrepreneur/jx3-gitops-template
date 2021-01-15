@@ -1,4 +1,0 @@
-gateway:
-  hosts:
-  - auth.example.com
-  tlsCertSecret: tls-wildcard-auth-example-com

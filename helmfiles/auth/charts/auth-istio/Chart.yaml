@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Istio config for auth namespace
 name: auth-istio
-version: 0.0.1
+version: 0.0.5

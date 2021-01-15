@@ -1,0 +1,2 @@
+secretPaths:
+  keycloakDB: auth/keycloakDB

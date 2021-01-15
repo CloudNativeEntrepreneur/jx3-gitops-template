@@ -6,15 +6,15 @@ environments:
 namespace: auth
 releases:
 - chart: ./charts/auth-istio
-  version: 0.0.1
+  version: 0.0.5
   name: auth-istio
   values:
   - jx-values.yaml
-  - values.istio.yaml
 - chart: ./charts/keycloak
-  version: 0.0.2
+  version: 0.0.5
   name: keycloak
   values:
   - jx-values.yaml
+  - values.yaml
 templates: {}
 renderedvalues: {}

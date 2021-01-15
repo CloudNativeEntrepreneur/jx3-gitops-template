@@ -6,10 +6,10 @@ spec:
   hosts:
   - auth.example.com
   gateways:
-  - auth
+  - istio-system/wildcard-example-com
   http:
   - route:
     - destination:
         port:
-          number: 8443
-        host: keycloak
+          number: 8080
+        host: keycloak-http

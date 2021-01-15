@@ -15,3 +15,4 @@ spec:
   name: keycloak-operator
   source: operatorhubio-catalog
   sourceNamespace: olm
+  startingCSV: 12.0.1
