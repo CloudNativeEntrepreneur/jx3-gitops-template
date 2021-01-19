@@ -1,0 +1,81 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  annotations:
+    lighthouse.jenkins-x.io/prependStepsURL: https://raw.githubusercontent.com/jenkins-x/jx3-pipeline-catalog/005e78cf69b643862344397a635736a51dd1bd89/tasks/git-clone/git-clone.yaml
+  creationTimestamp: null
+  name: release
+spec:
+  pipelineSpec:
+    tasks:
+    - name: changelog
+      resources: {}
+      taskSpec:
+        metadata: {}
+        stepTemplate:
+          name: ""
+          resources: {}
+          volumeMounts:
+          - mountPath: /etc/podinfo
+            name: podinfo
+            readOnly: true
+          workingDir: /workspace/source
+        steps:
+        - image: gcr.io/jenkinsxio/builder-jx:2.1.142-761
+          name: next-version
+          resources: {}
+          script: |
+            #!/usr/bin/env bash
+            jx step next-version --use-git-tag-only --tag
+        - image: gcr.io/jenkinsxio/jx-cli:3.1.148
+          name: jx-variables
+          resources: {}
+          script: |
+            #!/usr/bin/env bash
+            jx gitops variables
+        - image: gcr.io/jenkinsxio/builder-jx:2.1.142-761
+          name: get-jx-prerelease-state
+          resources: {}
+          script: |
+            #!/bin/sh
+            ./.lighthouse/jenkins-x/release/get-jx-prerelease-state.sh
+        - image: gcr.io/jenkinsxio/jx-scm:0.0.7
+          name: release-jx-cli
+          resources: {}
+          env:
+          - name: GOPATH
+            value: /workspace
+          - name: GITHUB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: tekton-git
+                key: password
+          script: |
+            #!/bin/sh
+            export JX_VERSION=$(grep 'version: ' packages/jx-cli.yml | awk '{ print $2}')
+            jx scm release update --owner jenkins-x --name jx-cli --tag v$JX_VERSION --prerelease=false --kind github --server https://github.com --token $GITHUB_TOKEN
+        - image: gcr.io/jenkinsxio/jx-changelog:0.0.11
+          name: changelog
+          resources: {}
+          script: |
+            #!/bin/sh
+            source .jx/variables.sh
+            jx changelog create --verbose --version ${VERSION} --rev v${VERSION}
+        - image: gcr.io/jenkinsxio/jx-cli:3.1.148
+          name: promote-vs
+          resources: {}
+          script: |
+            #!/bin/bash
+            source .jx/variables.sh
+            ./.lighthouse/jenkins-x/release/promote-vs.sh
+        volumes:
+        - downwardAPI:
+            items:
+            - fieldRef:
+                fieldPath: metadata.labels
+              path: labels
+          name: podinfo
+  podTemplate: {}
+  serviceAccountName: tekton-bot
+  timeout: 240h0m0s
+status: {}

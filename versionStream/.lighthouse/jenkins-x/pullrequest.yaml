@@ -1,0 +1,70 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  annotations:
+    lighthouse.jenkins-x.io/prependStepsURL: https://raw.githubusercontent.com/jenkins-x/jx3-pipeline-catalog/005e78cf69b643862344397a635736a51dd1bd89/tasks/git-clone/git-clone-pr.yaml
+  creationTimestamp: null
+  name: pullrequest
+spec:
+  pipelineSpec:
+    params:
+    - default: bdd-git
+      description: the Secret name used for the git token  unique build number
+      name: BDD_GIT_TOKEN_SECRET
+      type: string
+    tasks:
+    - name: test
+      params:
+      - name: BDD_GIT_TOKEN_SECRET
+        value: $(params.BDD_GIT_TOKEN_SECRET)
+      resources: {}
+      taskSpec:
+        metadata: {}
+        params:
+        - default: bdd-git
+          description: the Secret name used for the git token  unique build number
+          name: BDD_GIT_TOKEN_SECRET
+          type: string
+        stepTemplate:
+          env:
+          - name: BDD_GIT_TOKEN_SECRET
+            value: $(params.BDD_GIT_TOKEN_SECRET)
+          name: ""
+          resources: {}
+          volumeMounts:
+          - mountPath: /etc/podinfo
+            name: podinfo
+            readOnly: true
+          workingDir: /workspace/source
+        steps:
+        - image: gcr.io/jenkinsxio/jx-cli:3.1.148
+          name: jx-variables
+          resources: {}
+          script: |
+            #!/usr/bin/env bash
+            jx gitops variables
+        - env:
+          - name: GH_ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: $(params.BDD_GIT_TOKEN_SECRET)
+          image: gcr.io/jenkinsxio/jx-cli:3.1.148
+          name: runci
+          resources: {}
+          script: |
+            #!/bin/bash
+            source .jx/variables.sh
+            echo running bdd test $JOB_NAME
+            /workspace/source/.lighthouse/jenkins-x/bdd/$JOB_NAME/ci.sh
+        volumes:
+        - downwardAPI:
+            items:
+            - fieldRef:
+                fieldPath: metadata.labels
+              path: labels
+          name: podinfo
+  podTemplate: {}
+  serviceAccountName: bdd-bot
+  timeout: 240h0m0s
+status: {}

@@ -58,11 +58,11 @@ fetch: init
 	helm repo add jx http://chartmuseum.jenkins-x.io
 
 	# generate the yaml from the charts in helmfile.yaml and moves them to the right directory tree (cluster or namespaces/foo)
-	helmfile --file helmfile.yaml template --include-crds --output-dir-template /tmp/generate/{{.Release.Namespace}}
+	helmfile --file helmfile.yaml template --include-crds --output-dir-template /tmp/generate/{{.Release.Namespace}}/{{.Release.Name}}
 
 	jx gitops split --dir /tmp/generate
 	jx gitops rename --dir /tmp/generate
-	jx gitops helmfile move --output-dir config-root --dir /tmp/generate
+	jx gitops helmfile move --output-dir config-root --dir /tmp/generate --dir-includes-release-name
 
 	# convert k8s Secrets => ExternalSecret resources using secret mapping + schemas
 	# see: https://github.com/jenkins-x/jx-secret#mappings
@@ -173,7 +173,7 @@ regen-check:
 regen-phase-1: git-setup resolve-metadata all $(KUBEAPPLY) verify-ingress-ignore commit
 
 .PHONY: regen-phase-2
-regen-phase-2: verify-ingress-ignore all verify-ignore secrets-populate commit
+regen-phase-2: verify-ingress-ignore all verify-ignore secrets-populate report commit
 
 .PHONY: regen-phase-3
 regen-phase-3: push secrets-wait
@@ -184,6 +184,10 @@ regen-none:
 
 .PHONY: apply
 apply: regen-check kubectl-apply secrets-populate verify write-completed
+	
+.PHONY: report
+report:
+	jx gitops helmfile report
 
 .PHONY: write-completed
 write-completed:

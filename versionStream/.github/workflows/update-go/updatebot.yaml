@@ -1,0 +1,20 @@
+apiVersion: updatebot.jenkins-x.io/v1alpha1
+kind: UpdateConfig
+spec:
+  rules:
+  - changes:
+    - go:
+        owner:
+        - jenkins-x
+        - jenkins-x-plugins
+        repositories:
+          exclude:
+          - jx-v2-tekton-converter
+          - jx-kh-check
+          include:
+          - "jx-*"
+        package: github.com/jenkins-x
+        upgradePackages:
+          include:
+          - "github.com/jenkins-x/*"
+          - "github.com/jenkins-x-plugins/*"

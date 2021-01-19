@@ -1,0 +1,30 @@
+approvers:
+- abayer
+- cagiti
+- ccojocar
+- daveconde
+- garethjevans
+- hferentschik
+- jstrachan
+- macox
+- pmuir
+- rajdavies
+- rawlingsj
+- warrenbailey
+- jenkins-x-labs-bot
+- cloudbees-ci-cd[bot]
+reviewers:
+- abayer
+- cagiti
+- ccojocar
+- daveconde
+- garethjevans
+- hferentschik
+- jstrachan
+- macox
+- pmuir
+- rajdavies
+- rawlingsj
+- warrenbailey
+- jenkins-x-labs-bot
+- cloudbees-ci-cd[bot]

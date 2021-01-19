@@ -1,0 +1,25 @@
+name: Kind BDD test
+on:
+  # allow manual triggering
+  workflow_dispatch: {}
+  # TODO disable kind BDD for now until it works reliably
+  # pull_request:
+jobs:
+  kind:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Kind
+      env:
+        GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
+      run: |2
+
+        if [ -z "$GH_ACCESS_TOKEN" ]
+        then
+              echo "ERROR: no GH_ACCESS_TOKEN env var defined for kind.yaml - did the Pull Request come from a fork?"
+        else
+              echo "has valid git token for kind.yaml"
+        fi
+
+        sudo -E ./jx/bdd/kind/ci.sh
