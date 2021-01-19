@@ -4,13 +4,9 @@ Jenkins X 3.x GitOps repository for a Kubernetes cluster with all the things you
 
 This is a work in progress... There are still some pending features:
 
-1. Istio/Keycloak integration for SSO
-  * Dev Realm
-  * Dev tooling auth'd via Keycloak Dev Realm
-1. Postgres instance to back Keycloak
 1. SQL backups for Keycloak DB
-1. Keycloak Backup
-1. Velero/Velero Backups
+1. Keycloak Backup CRD
+1. Velero chart and Velero Backups
 1. Strimzi Kafka Operator
 1. Strimzi Kafka cluster to back knative-eventing
 
