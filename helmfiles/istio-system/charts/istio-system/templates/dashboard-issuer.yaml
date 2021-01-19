@@ -3,25 +3,21 @@
 {{- $gkeServiceAccountSecret  := .Values.gkeServiceAccountSecret -}}
 {{- $awsRegion  := .Values.jxRequirements.cluster.region -}}
 {{- $email  := .Values.jxRequirements.ingress.tls.email -}}
-
-{{- range $subdomain := .Values.subdomains }}
----
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: "wildcard-{{ $subdomain.name | replace "." "-" }}-{{ $domain | replace "." "-" }}"
+  name: "dashboard-jx-{{ $domain | replace "." "-" }}"
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: "{{ $email }}"
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: "wildcard-{{ $subdomain.name | replace "." "-" }}-{{ $domain | replace "." "-" }}"
+      name: "dashboard-jx-{{ $domain | replace "." "-" }}"
     solvers:
     - selector:
         dnsNames:
-        - "*.{{ $subdomain.name }}.{{ $domain }}"
-        - "{{ $subdomain.name }}.{{ $domain }}"
+        - "dashboard-jx.{{ $domain }}"
       # ACME DNS-01 provider configurations
       dns01:
 {{- if eq $provider "gke" }}
@@ -38,5 +34,4 @@ spec:
 {{- if eq $provider "eks" }}
         route53:
           region: {{ $awsRegion }}
-{{- end }}
 {{- end }}

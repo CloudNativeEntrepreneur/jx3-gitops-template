@@ -1,13 +1,15 @@
 filepath: ""
 helmfiles:
+- path: helmfiles/auth/helmfile.yaml
 - path: helmfiles/cert-manager/helmfile.yaml
+- path: helmfiles/elastic-system/helmfile.yaml
 - path: helmfiles/istio-operator/helmfile.yaml
 - path: helmfiles/istio-system/helmfile.yaml
 - path: helmfiles/jx/helmfile.yaml
-- path: helmfiles/keycloak-operator/helmfile.yaml
 - path: helmfiles/knative-eventing/helmfile.yaml
 - path: helmfiles/knative-operator/helmfile.yaml
 - path: helmfiles/knative-serving/helmfile.yaml
+- path: helmfiles/kube-system/helmfile.yaml
 - path: helmfiles/monitor/helmfile.yaml
 - path: helmfiles/olm/helmfile.yaml
 - path: helmfiles/postgres-operator/helmfile.yaml

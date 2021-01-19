@@ -22,7 +22,7 @@ spec:
           serviceAnnotations:
             service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
             external-dns.alpha.kubernetes.io/hostname: >-
-              *.{{ $domain }}{{- range $subdomain := .Values.subdomains }},*.{{ $subdomain }}.{{ $domain }}{{- end }}
+              *.{{ $domain }}{{- range $subdomain := .Values.subdomains }},*.{{ $subdomain.name }}.{{ $domain }}{{- end }}
       - name: cluster-local-gateway
         enabled: true
         label:

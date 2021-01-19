@@ -1,0 +1,3 @@
+keycloak:
+  url: auth.example.com
+  realm: dev

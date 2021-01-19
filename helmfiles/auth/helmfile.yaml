@@ -4,15 +4,29 @@ environments:
     values:
     - jx-values.yaml
 namespace: auth
+repositories:
+- name: bitnami
+  url: https://charts.bitnami.com/bitnami
 releases:
 - chart: ./charts/auth-istio
-  version: 0.0.5
+  version: 0.0.6
   name: auth-istio
   values:
   - jx-values.yaml
 - chart: ./charts/keycloak
-  version: 0.0.5
+  version: 0.0.6
   name: keycloak
+  values:
+  - jx-values.yaml
+  - values.yaml
+- chart: bitnami/redis
+  version: 12.3.2
+  name: auth-redis
+  values:
+  - jx-values.yaml
+- chart: ./charts/oauth2proxy
+  version: 0.0.1
+  name: oauth2proxy
   values:
   - jx-values.yaml
   - values.yaml

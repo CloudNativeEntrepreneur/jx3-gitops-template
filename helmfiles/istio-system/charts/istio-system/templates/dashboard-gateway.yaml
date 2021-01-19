@@ -1,0 +1,28 @@
+{{- $domain  := .Values.domain -}}
+{{- $istioApiVersion  := .Values.istio.apiVersion -}}
+apiVersion: {{ $istioApiVersion }}
+kind: Gateway
+metadata:
+  name: "dashboard-jx-{{ $domain | replace "." "-" }}"
+spec:
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "dashboard-jx.{{ $domain }}"
+    port:
+      number: 80
+      name: http
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - "dashboard-jx.{{ $domain }}"
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      credentialName: "tls-dashboard-jx-{{ $domain | replace "." "-" }}"
+      mode: SIMPLE

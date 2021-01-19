@@ -1,0 +1,4 @@
+apiVersion: v1
+description: OAuth2 Proxy connected to Keycloak
+name: oauth2proxy
+version: 0.0.1

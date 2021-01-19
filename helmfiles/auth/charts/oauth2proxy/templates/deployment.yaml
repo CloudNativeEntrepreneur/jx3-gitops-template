@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: oauth2proxy
+  name: oauth2proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: oauth2proxy
+  template:
+    metadata:
+      labels:
+        k8s-app: oauth2proxy
+    spec:
+      containers:
+        - image: quay.io/oauth2-proxy/oauth2-proxy:v6.1.1
+          imagePullPolicy: Always
+          name: oauth2-proxy
+          ports:
+          - containerPort: 4180
+            protocol: TCP
+          env:
+          - name: KEYCLOAK_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-client-secret-dev
+                key: CLIENT_ID
+          - name: KEYCLOAK_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: keycloak-client-secret-dev
+                key: CLIENT_SECRET
+          - name: COOKIE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth2proxy
+                key: cookieSecret
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: auth-redis
+                key: redis-password
+          args:
+          - --provider=oidc
+          - --provider-display-name="Keycloak"
+          - --client-id=$(KEYCLOAK_CLIENT_ID)
+          - --client-secret=$(KEYCLOAK_CLIENT_SECRET)
+          - --email-domain="*"
+          - --pass-access-token=true
+          - --pass-authorization-header=true
+          - --set-authorization-header=true
+          - --oidc-issuer-url=https://auth.example.com/auth/realms/dev
+          - --login-url=https://auth.example.com/auth/realms/dev/protocol/openid-connect/auth
+          - --redeem-url=https://auth.example.com/auth/realms/dev/protocol/openid-connect/token
+          - --validate-url=https://auth.example.com/auth/realms/dev/protocol/openid-connect/userinfo
+          - --http-address=http://:4180
+          - --scope=openid profile email roles
+          - --cookie-refresh=4m0s
+          - --cookie-expire=4h0m0s
+          - --cookie-secure=true
+          - --cookie-secret=$(COOKIE_SECRET)
+          - --whitelist-domain=".example.com"
+          - --cookie-domain=.example.com
+          - --standard-logging=true
+          - --auth-logging=true
+          - --request-logging=true
+          - --skip-provider-button=true
+          - --upstream=static://
+          - --redis-connection-url=redis://auth-redis-master.auth.svc.cluster.local:6379
+          - --redis-password=$(REDIS_PASSWORD)
+          - --session-store-type=redis

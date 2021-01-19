@@ -1,0 +1,16 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakRealm
+metadata:
+  name: dev
+  labels:
+    realm: dev
+    keycloak: auth
+spec:
+  realm:
+    id: dev
+    realm: dev
+    enabled: true
+    displayName: Dev Realm
+  instanceSelector:
+    matchLabels:
+      keycloak: auth

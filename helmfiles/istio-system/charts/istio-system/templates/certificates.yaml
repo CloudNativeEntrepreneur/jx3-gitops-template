@@ -4,16 +4,16 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "tls-wildcard-{{ $subdomain | replace "." "-" }}-{{ $domain | replace "." "-" }}"
+  name: "tls-wildcard-{{ $subdomain.name | replace "." "-" }}-{{ $domain | replace "." "-" }}"
   labels:
     jenkins.io/letsencrypt-service: production
 spec:
-  secretName: "tls-wildcard-{{ $subdomain | replace "." "-" }}-{{ $domain | replace "." "-" }}"
+  secretName: "tls-wildcard-{{ $subdomain.name | replace "." "-" }}-{{ $domain | replace "." "-" }}"
   issuerRef:
-    name: "wildcard-{{ $subdomain | replace "." "-" }}-{{ $domain | replace "." "-" }}"
+    name: "wildcard-{{ $subdomain.name | replace "." "-" }}-{{ $domain | replace "." "-" }}"
     kind: ClusterIssuer
-  commonName: "*.{{ $subdomain }}.{{ $domain }}"
+  commonName: "*.{{ $subdomain.name }}.{{ $domain }}"
   dnsNames:
-  - "*.{{ $subdomain }}.{{ $domain }}"
-  - "{{ $subdomain }}.{{ $domain }}"
+  - "*.{{ $subdomain.name }}.{{ $domain }}"
+  - "{{ $subdomain.name }}.{{ $domain }}"
 {{- end }}

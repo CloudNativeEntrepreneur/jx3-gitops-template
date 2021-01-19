@@ -3,6 +3,7 @@ kind: Keycloak
 metadata:
   name: auth
   labels:
+    keycloak: auth
     app: auth
 spec:
   instances: 3

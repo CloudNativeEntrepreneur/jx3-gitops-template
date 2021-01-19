@@ -1,0 +1,43 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
+metadata:
+  name: dev
+  labels:
+    app: auth
+spec:
+  realmSelector:
+    matchLabels:
+      realm: dev
+  client:
+    clientId: dev
+    clientType: confidential
+    directAccessGrantsEnabled: true
+    standardFlowEnabled: true
+    implicitFlowEnabled: false
+    redirectUris:
+      - https://dashboard-jx.example.com
+      - https://dashboard-jx.example.com/*
+    protocolMappers:
+      - name: audience
+        protocolMapper: oidc-audience-mapper
+        protocol: openid-connect
+        config:
+          claim.name: audience
+          access.token.claim: "true"
+          included.client.audience: client-test
+      - name: username
+        protocolMapper: oidc-usermodel-property-mapper
+        protocol: openid-connect
+        config:
+          access.token.claim: "true"
+          claim.name: username
+          jsonType.label: String
+          user.attribute: username
+      - name: roles
+        protocolMapper: oidc-usermodel-client-role-mapper
+        protocol: openid-connect
+        config:
+          access.token.claim: "true"
+          claim.name: roles
+          jsonType.label: String
+          multivalued: "true"

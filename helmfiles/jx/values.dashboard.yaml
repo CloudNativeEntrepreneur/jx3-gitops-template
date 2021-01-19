@@ -1,6 +1,6 @@
 istio:
   enabled: true
-  gateway: istio-system/wildcard-jx-example-com
+  gateway: istio-system/dashboard-jx-example-com
 
 ingress:
   enabled: false

@@ -1,0 +1,15 @@
+{{- $domain  := .Values.domain -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tls-dashboard-jx-{{ $domain | replace "." "-" }}
+  labels:
+    jenkins.io/letsencrypt-service: production
+spec:
+  secretName: tls-dashboard-jx-{{ $domain | replace "." "-" }}
+  issuerRef:
+    name: dashboard-jx-{{ $domain | replace "." "-" }}
+    kind: Issuer
+  commonName: dashboard-jx.{{ $domain }}
+  dnsNames:
+  - dashboard-jx.{{ $domain }}
