@@ -22,7 +22,7 @@ ingress:
       "tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-s": {}
 {{- end }}
 
-{{- if eq .Values.jxRequirements.cluster.provider "eks" }}
+{{- if and (eq .Values.jxRequirements.cluster.provider "eks") (hasKey .Values.jxRequirements.cluster "region") }}
 pod:
   env:
     AWS_REGION: {{ .Values.jxRequirements.cluster.region }}
@@ -38,8 +38,23 @@ serviceAccount:
   annotations:
 {{- if eq .Values.jxRequirements.cluster.provider "gke" }}
     iam.gke.io/gcp-service-account: {{ .Values.jxRequirements.cluster.clusterName }}-jxui@{{ .Values.jxRequirements.cluster.project }}.iam.gserviceaccount.com
-{{- else if eq .Values.jxRequirements.cluster.provider "eks" }}
+{{- else if and (eq .Values.jxRequirements.cluster.provider "eks") (hasKey .Values.jxRequirements.cluster "project")  }}
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-jx-pipelines-visualizer
 {{- else }}
     installed-by: jenkins-x
+{{- end }}
+
+# allow the UI to query the long-term storage directly to find an old pipeline
+{{- if hasKey .Values.jxRequirements "storage" }}
+{{- range .Values.jxRequirements.storage }}
+{{- if eq .name "logs" }}
+config:
+  archivedLogsURLTemplate: >-
+    {{ .url }}{{`/jenkins-x/logs/{{.Owner}}/{{.Repository}}/{{if hasPrefix .Branch "pr"}}{{.Branch | upper}}{{else}}{{.Branch}}{{end}}/{{.Build}}.log`}}
+  archivedPipelinesURLTemplate: >-
+    {{ .url }}{{`/jenkins-x/logs/{{.Owner}}/{{.Repository}}/{{if hasPrefix .Branch "pr"}}{{.Branch | upper}}{{else}}{{.Branch}}{{end}}/{{.Build}}.yaml`}}
+  archivedPipelineRunsURLTemplate: >-
+    {{ .url }}{{`/jenkins-x/pipelineruns/{{.Namespace}}/{{.Name}}.yaml`}}
+{{- end }}
+{{- end }}
 {{- end }}

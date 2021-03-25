@@ -1,3 +1,4 @@
 secretPaths:
   keycloakDB: auth/keycloakDB
   oauth2proxy: auth/oauth2proxy
+  redis: auth/redis

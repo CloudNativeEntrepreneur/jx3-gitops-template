@@ -11,9 +11,11 @@ spec:
           exclude:
           - jx-v2-tekton-converter
           - jx-kh-check
+          - lighthouse-client
           include:
           - "jx-*"
         package: github.com/jenkins-x
+        noPatch: true
         upgradePackages:
           include:
           - "github.com/jenkins-x/*"

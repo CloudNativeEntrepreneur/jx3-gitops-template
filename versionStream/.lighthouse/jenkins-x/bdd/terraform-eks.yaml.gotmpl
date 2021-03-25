@@ -1,0 +1,96 @@
+apiVersion: tf.isaaguilar.com/v1alpha1
+kind: Terraform
+spec:
+  env:
+  - name: KUBECONFIG
+    value: "/tmp/kubecfg"
+  - name: TF_VAR_jx_git_url
+    value: https://github.com/jenkins-x-bdd/cluster-{{ .Env.TF_VAR_cluster_name }}-dev.git
+  - name: TF_VAR_jx_bot_username
+    value: jenkins-x-bot-bdd
+  - name: TF_VAR_vault_user
+    value: jx-bdd-test
+  # TODO until we get auto scaling working lets use 4 nodes to make sure we can fit the BDD test as well
+  - name: TF_VAR_desired_node_count
+    value: "4"
+  - name: TF_VAR_jx_bot_token
+    valueFrom:
+      secretKeyRef:
+        name: bdd-git
+        key: password
+{{- range $pkey, $pval := .Env }}
+  - name: {{ $pkey }}
+    value: {{ quote $pval }}
+{{- end }}
+
+  credentials:
+  - secretNameRef:
+      name: aws-bdd-user-creds
+
+  scmAuthMethods:
+  - host: github.com
+    git:
+      https:
+        requireProxy: false
+        tokenSecretRef:
+          name: bdd-git
+          namespace: jx
+          key: password
+
+  terraformRunner: ghcr.io/jenkins-x/terraform-operator-aws
+  terraformVersion: 3.1.335
+
+  terraformModule:
+    address: https://github.com/jenkins-x-bdd/infra-{{ .Env.TF_VAR_cluster_name }}-dev
+
+  customBackend: |-
+    terraform {
+      backend "kubernetes" {
+        secret_suffix = "{{ .Name }}-state"
+        namespace = "{{ .Namespace }}"
+        in_cluster_config = true
+      }
+    }
+
+  serviceAccount: tekton-bot
+
+  applyOnCreate: true
+  applyOnUpdate: true
+  applyOnDelete: true
+  ignoreDelete: false
+
+
+  postrunScript: |-
+    #!/bin/bash
+    set -e
+    set -x
+
+    echo "Terraform is done!"
+
+    echo "lets connect to the remote cluster"
+    aws eks --region $AWS_REGION update-kubeconfig --name ${TF_VAR_cluster_name}
+
+    echo "connected to the remote cluster"
+    kubectl get ns
+
+    echo "now connected to cluster:"
+    jx ctx -b
+
+    echo "using jx version: $JX_VERSION"
+
+    # verify we have the correct context
+    #jx verify ctx -c "gke_${TF_VAR_gcp_project}_us-central1-a_${TF_VAR_cluster_name}"
+
+    echo "lets verify the log completes"
+    jx admin log -b
+
+    echo "installing the BDD test"
+    export GIT_ORGANISATION="jenkins-x-bdd"
+    export TEST_NAME="test-create-spring"
+    helm version
+    helm repo add jx3 https://storage.googleapis.com/jenkinsxio/charts
+    helm upgrade --install bdd jx3/jx-bdd  --namespace jx --create-namespace --set bdd.owner="$GIT_ORGANISATION",command.test="make $TEST_NAME",jxgoTag="$JX_VERSION"
+
+    echo "about to wait for the BDD test to run"
+    sleep 20
+    jx verify job --name jx-bdd -n jx --log-fail

@@ -1,0 +1,11 @@
+awsRegion: us-west-2
+
+rbac:
+  serviceAccount: 
+    name: cluster-autoscaler
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::xxx:role/cluster-name-cluster-autoscaler-cluster-autoscaler"
+
+autoDiscovery:
+  clusterName: cluster-name
+  enabled: true

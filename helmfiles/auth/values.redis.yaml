@@ -1,0 +1,2 @@
+existingSecret: auth-redis
+existingSecretPasswordKey: redis-password

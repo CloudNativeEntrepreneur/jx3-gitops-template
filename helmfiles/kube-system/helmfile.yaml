@@ -5,11 +5,19 @@ environments:
     - jx-values.yaml
 namespace: kube-system
 repositories:
+- name: autoscaler
+  url: https://kubernetes.github.io/autoscaler
 - name: bitnami
   url: https://charts.bitnami.com/bitnami
 releases:
+# - chart: autoscaler/cluster-autoscaler  # uncomment for AWS
+#   version: 9.9.0
+#   name: cluster-autoscaler
+#   values:
+#   - jx-values.yaml
+#   - values.cluster-autoscaler.yaml
 - chart: bitnami/metrics-server
-  version: 5.3.4
+  version: 5.5.1
   name: metrics-server
   values:
   - jx-values.yaml

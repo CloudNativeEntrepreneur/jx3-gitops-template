@@ -19,12 +19,12 @@ releases:
   - jx-values.yaml
   - values.kube-state-metrics.yaml
 - chart: prometheus-community/kube-prometheus-stack
-  version: 13.0.0
+  version: 13.5.1
   name: kube-prometheus-stack
   values:
   - jx-values.yaml
 - chart: prometheus-community/prometheus-adapter
-  version: 2.11.0
+  version: 2.8.1
   name: prometheus-adapter
   values:
   - jx-values.yaml

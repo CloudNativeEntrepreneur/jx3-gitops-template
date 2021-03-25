@@ -7,15 +7,17 @@ echo "promoting changes in jx3-gitops-template to downstream templates"
 
 declare -a repos=(
   # local
-  "jx3-kubernetes" "jx3-kubernetes-istio" "jx3-kind-vault" "jx3-minikube" "jx3-docker-vault"
+  "jx3-kubernetes" "jx3-kubernetes-bbc" "jx3-kubernetes-istio" "jx3-kind" "jx3-minikube" "jx3-docker-vault"
   # GKE
-  "jx3-gke-vault" "jx3-gke-gsm" "jx3-gke-gcloud-vault"
+  "jx3-gke-vault" "jx3-gke-gsm" "jx3-gke-gsm-gitea" "jx3-gke-gcloud-vault"
   # EKS
   "jx3-eks-terraform-vault" "jx3-eks-vault"
   # Azure
   "jx3-azure-vault" "jx3-azure-akv"
   # OpenShift
   "jx3-openshift" "jx3-openshift-crc"
+  # IKS
+  "jx3-iks"
 )
 export TMPDIR=/tmp/jx3-gitops-promote
 rm -rf $TMPDIR

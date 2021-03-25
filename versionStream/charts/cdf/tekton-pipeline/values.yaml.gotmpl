@@ -1,5 +1,11 @@
 dummy: value
 
+controller:
+  pod:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9090"
+
 {{- if and (hasKey .Values.jxRequirements.cluster "project") (hasKey .Values.jxRequirements.cluster "clusterName") (eq .Values.jxRequirements.cluster.provider "eks") }}
 serviceaccount:
   annotations:

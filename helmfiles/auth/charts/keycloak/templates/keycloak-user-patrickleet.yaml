@@ -1,0 +1,18 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakUser
+metadata:
+  name: patrickleet
+  labels:
+    realm: dev
+    keycloak: auth
+spec:
+  user:
+    username: patrickleet
+    firstName: Patrick
+    lastName: Scott
+    email: pat@patscott.io
+    enabled: true
+    emailVerified: true
+  realmSelector:
+    matchLabels:
+      realm: dev

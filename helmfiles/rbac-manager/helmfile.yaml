@@ -9,7 +9,7 @@ repositories:
   url: https://charts.fairwinds.com/stable
 releases:
 - chart: fairwinds-stable/rbac-manager
-  version: 1.7.0
+  version: 1.8.1
   name: rbac-manager
   values:
   - jx-values.yaml

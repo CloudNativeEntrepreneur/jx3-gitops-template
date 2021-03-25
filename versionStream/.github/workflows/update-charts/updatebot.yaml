@@ -11,3 +11,4 @@ spec:
         - cdf/*
         - jenkins-x/*
         - jx3/*
+        - jxgh/*

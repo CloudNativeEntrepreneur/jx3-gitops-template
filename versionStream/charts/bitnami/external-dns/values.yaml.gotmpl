@@ -44,3 +44,8 @@ domainFilters:
 {{- end }}
 {{- end }}
 
+metrics:
+  enabled: true
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "7979"

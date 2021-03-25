@@ -1,0 +1,79 @@
+# https://github.com/grafana/helm-charts/blob/grafana-6.6.3/charts/grafana/values.yaml
+
+plugins:
+  - grafana-piechart-panel 1.6.1
+  - briangann-datatable-panel 1.0.3
+
+grafana.ini:
+  server:
+    domain: grafana{{ .Values.jxRequirements.ingress.namespaceSubDomain }}{{ .Values.jxRequirements.ingress.domain }}
+    root_url: "http://grafana{{ .Values.jxRequirements.ingress.namespaceSubDomain }}{{ .Values.jxRequirements.ingress.domain }}"
+    serve_from_sub_path: true
+  analytics:
+    reporting_enabled: false
+    check_for_updates: false
+  dashboards:
+    # this dashboard is defined in https://github.com/jenkins-x-charts/grafana-dashboard
+    default_home_dashboard_path: /tmp/dashboards/jenkins-x.json
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        uid: loki
+        type: loki
+        access: proxy
+        url: http://loki.jx-observability:3100
+        version: 1
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus-server.jx-observability
+        httpMethod: POST
+        version: 1
+
+# automatically load all dashboards stored in ConfigMaps with the given label
+sidecar:
+  dashboards:
+    enabled: true
+    label: jenkins-x.io/grafana-dashboard
+    searchNamespace: ALL
+    folder: /tmp/dashboards
+    provider:
+      allowUiUpdates: true
+  datasources:
+    enabled: true
+    label: jenkins-x.io/grafana-datasource
+    searchNamespace: ALL
+  notifiers:
+    enabled: true
+    label: jenkins-x.io/grafana-notifier
+    searchNamespace: ALL
+
+notifiers:
+  notifiers.yaml:
+    notifiers:
+      - name: prometheus-alertmanager
+        type: prometheus-alertmanager
+        uid: prometheus-alertmanager
+        org_id: 1
+        is_default: true
+        settings:
+          url: http://prometheus-alertmanager.jx-observability
+    delete_notifiers: []
+
+ingress:
+  enabled: true
+  hosts:
+    - grafana{{ .Values.jxRequirements.ingress.namespaceSubDomain }}{{ .Values.jxRequirements.ingress.domain }}
+
+persistence:
+  enabled: true
+
+deploymentStrategy:
+  type: Recreate
+
+testFramework:
+  enabled: false

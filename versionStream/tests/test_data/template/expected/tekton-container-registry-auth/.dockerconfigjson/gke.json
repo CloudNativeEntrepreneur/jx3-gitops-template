@@ -1,0 +1,16 @@
+{
+
+  "credHelpers": {
+      "gcr.io": "gcr",
+      "us.gcr.io": "gcr",
+      "eu.gcr.io": "gcr",
+      "asia.gcr.io": "gcr",
+      "staging-k8s.gcr.io": "gcr"
+  },
+
+  "auths":{
+    "ghcr.io": {
+        "auth": "Z2l0b3BlcmF0b3JVc2VybmFtZTpnaXRvcGVyYXRvcnBhc3N3b3Jk"
+    }
+  }
+}

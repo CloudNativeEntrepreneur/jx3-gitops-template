@@ -1,5 +1,13 @@
+{{- if and (hasKey .Values.jxRequirements.cluster "region") (eq .Values.jxRequirements.cluster.provider "eks") }}
+env:
+  AWS_REGION: {{ .Values.jxRequirements.cluster.region }}
+{{- end }}
+
 serviceaccount:
   annotations:
 {{- if eq "gke" .Values.jxRequirements.cluster.provider }}
     iam.gke.io/gcp-service-account: {{ .Values.jxRequirements.cluster.clusterName }}-bc@{{ .Values.jxRequirements.cluster.project }}.iam.gserviceaccount.com
+{{- end }}
+{{- if and (hasKey .Values.jxRequirements.cluster "project") (hasKey .Values.jxRequirements.cluster "clusterName") (eq .Values.jxRequirements.cluster.provider "eks") }}
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-jx-bucketrepo
 {{- end }}

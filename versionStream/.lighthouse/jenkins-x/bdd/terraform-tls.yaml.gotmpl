@@ -1,0 +1,82 @@
+apiVersion: tf.isaaguilar.com/v1alpha1
+kind: Terraform
+spec:
+  env:
+  - name: KUBECONFIG
+    value: "/tmp/kubecfg"
+  - name: TF_VAR_jx_git_url
+    value: https://github.com/jenkins-x-bdd/cluster-{{ .Env.TF_VAR_cluster_name }}-dev.git
+  - name: TF_VAR_jx_bot_username
+    value: jenkins-x-bot-bdd
+  - name: TF_VAR_jx_bot_token
+    valueFrom:
+      secretKeyRef:
+        name: bdd-git
+        key: password
+{{- range $pkey, $pval := .Env }}
+  - name: {{ $pkey }}
+    value: {{ quote $pval }}
+{{- end }}
+
+  scmAuthMethods:
+  - host: github.com
+    git:
+      https:
+        requireProxy: false
+        tokenSecretRef:
+          name: bdd-git
+          namespace: jx
+          key: password
+
+  terraformRunner: ghcr.io/jenkins-x/terraform-operator-gcp
+  terraformVersion: 3.1.335
+
+  terraformModule:
+    address: https://github.com/jenkins-x-bdd/infra-{{ .Env.TF_VAR_cluster_name }}-dev
+
+  customBackend: |-
+    terraform {
+      backend "kubernetes" {
+        secret_suffix = "{{ .Name }}-state"
+        namespace = "{{ .Namespace }}"
+        in_cluster_config = true
+      }
+    }
+
+  serviceAccount: tekton-bot
+
+  applyOnCreate: true
+  applyOnUpdate: true
+  applyOnDelete: true
+  ignoreDelete: false
+
+
+  postrunScript: |-
+    #!/bin/bash
+    set -e
+    set -x
+
+    echo "Terraform is done!"
+
+    echo "lets connect to the remote cluster"
+    $(terraform output -raw connect)
+
+    echo "now connected to cluster:"
+    jx ctx -b
+
+    # verify we have the correct context
+    jx verify ctx -c "gke_${TF_VAR_gcp_project}_us-central1-a_${TF_VAR_cluster_name}"
+
+    echo "lets verify the log completes"
+    jx admin log -b
+
+    # switch to jx namespace to be sure
+    jx ns jx
+
+    echo "checking the clusterissuer"
+
+    kubectl get clusterissuer letsencrypt-staging -ojsonpath='{.status.conditions[0].status}'
+    kubectl get clusterissuer letsencrypt-staging -ojsonpath='{.status.conditions[0].message}'
+
+    echo "now checking for host hook-jx.${TF_VAR_cluster_name}.jenkinsxlabs.com"
+    jx verify tls hook-jx.${TF_VAR_cluster_name}.jenkinsxlabs.com  --production=false --timeout 20m --issuer "(STAGING) Artificial Apricot R3"

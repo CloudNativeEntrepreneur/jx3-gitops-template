@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jenkins-x/jx-helpers/v3/pkg/gitclient/giturl"
 	"path/filepath"
 	"testing"
 
@@ -11,9 +12,14 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
-func TestSecretSchemaTemplates(t *testing.T) {
-	ns := "jx"
+var (
+	// generateTestOutput enable to regenerate the expected output
+	generateTestOutput = false
 
+	ns = "jx"
+)
+
+func TestSecretSchemaTemplatesMavenSettings(t *testing.T) {
 	testSecrets := []runtime.Object{
 		&corev1.Secret{
 			ObjectMeta: metav1.ObjectMeta{
@@ -57,129 +63,354 @@ func TestSecretSchemaTemplates(t *testing.T) {
 		},
 	}
 
-	runner := templatertesting.Runner{
-		TestCases: []templatertesting.TestCase{
-			{
-				TestName:   "bucketrepo",
-				ObjectName: "bucketrepo-config",
-				Property:   "config.yaml",
-				Format:     "yaml",
-				Requirements: &config.RequirementsConfig{
-					Repository: "bucketrepo",
-					Cluster: config.ClusterConfig{
-						Provider:    "minikube",
-						ProjectID:   "myproject",
-						ClusterName: "mycluster",
-					},
-				},
-			},
-
-			/*
-				{
-					TestName:   "docker-aks",
-					ObjectName: "jenkins-docker-cfg",
-					Property:   "config.json",
-					Format:     "json",
-					Requirements: &config.RequirementsConfig{
-						Repository: "nexus",
-						Cluster: config.ClusterConfig{
-							Provider:    "aks",
-							Registry:    "my-registry",
-							ProjectID:   "myproject",
-							ClusterName: "mycluster",
-						},
-					},
-				},
-				{
-					TestName:   "docker-aws",
-					ObjectName: "jenkins-docker-cfg",
-					Property:   "config.json",
-					Format:     "json",
-					Requirements: &config.RequirementsConfig{
-						Repository: "nexus",
-						Cluster: config.ClusterConfig{
-							Provider:    "aws",
-							Registry:    "my-registry",
-							ProjectID:   "myproject",
-							ClusterName: "mycluster",
-						},
-					},
-				},
-				{
-					TestName:   "docker-eks",
-					ObjectName: "jenkins-docker-cfg",
-					Property:   "config.json",
-					Format:     "json",
-					Requirements: &config.RequirementsConfig{
-						Repository: "nexus",
-						Cluster: config.ClusterConfig{
-							Provider:    "eks",
-							Registry:    "my-registry",
-							ProjectID:   "myproject",
-							ClusterName: "mycluster",
-						},
-					},
-				},
-
-				{
-					TestName:   "docker-gke",
-					ObjectName: "jenkins-docker-cfg",
-					Property:   "config.json",
-					Format:     "json",
-					Requirements: &config.RequirementsConfig{
-						Repository: "nexus",
-						Cluster: config.ClusterConfig{
-							Provider:    "gke",
-							ProjectID:   "myproject",
-							ClusterName: "mycluster",
-						},
-					},
-				},
-				{
-					TestName:   "docker-minikube",
-					ObjectName: "jenkins-docker-cfg",
-					Property:   "config.json",
-					Format:     "json",
-					Requirements: &config.RequirementsConfig{
-						Repository: "nexus",
-						Cluster: config.ClusterConfig{
-							Provider:    "minikube",
-							ProjectID:   "myproject",
-							ClusterName: "mycluster",
-						},
-					},
-				},
-			*/
-			{
-				TestName:   "nexus",
-				ObjectName: "jenkins-maven-settings",
-				Property:   "settings.xml",
-				Format:     "xml",
-				Requirements: &config.RequirementsConfig{
-					Repository: "nexus",
-					Cluster: config.ClusterConfig{
-						Provider:    "gke",
-						ProjectID:   "myproject",
-						ClusterName: "mycluster",
-					},
-				},
-			},
-			{
-				TestName:   "none",
-				ObjectName: "jenkins-maven-settings",
-				Property:   "settings.xml",
-				Format:     "xml",
-				Requirements: &config.RequirementsConfig{
-					Repository: "nexus",
-					Cluster: config.ClusterConfig{
-						Provider:    "docker",
-						ProjectID:   "myproject",
-						ClusterName: "mycluster",
-					},
+	testCases := []templatertesting.TestCase{
+		{
+			TestName:   "nexus",
+			ObjectName: "jenkins-maven-settings",
+			Property:   "settings.xml",
+			Format:     "xml",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					Provider:    "gke",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
 				},
 			},
 		},
-		SchemaFile:  filepath.Join("..", "charts", "jenkins-x", "jxboot-helmfile-resources", "secret-schema.yaml"),
+		{
+			TestName:   "none",
+			ObjectName: "jenkins-maven-settings",
+			Property:   "settings.xml",
+			Format:     "xml",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					Provider:    "docker",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+	}
+	if generateTestOutput {
+		for i := range testCases {
+			testCases[i].GenerateTestOutput = true
+		}
+	}
+	runner := templatertesting.Runner{
+		TestCases:   testCases,
+		SchemaFile:  filepath.Join("..", "charts", "jx3", "jxboot-helmfile-resources", "secret-schema.yaml"),
+		Namespace:   ns,
+		KubeObjects: testSecrets,
+	}
+	runner.Run(t)
+}
+
+func TestSecretSchemaTemplatesContainerRegistry(t *testing.T) {
+	testSecrets := []runtime.Object{
+		&corev1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "jx-boot",
+				Namespace: "jx-git-operator",
+			},
+			Data: map[string][]byte{
+				"username": []byte("gitoperatorUsername"),
+				"password": []byte("gitoperatorpassword"),
+			},
+		}}
+
+	myRegistrySecrets := []runtime.Object{
+		&corev1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "container-registry-auth",
+				Namespace: ns,
+			},
+			Data: map[string][]byte{
+				"url":      []byte("my-registry"),
+				"username": []byte("my-registry-user"),
+				"password": []byte("my-registry-pwd"),
+			},
+		}}
+
+	anotherRegistrySecrets := []runtime.Object{
+		&corev1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "container-registry-auth",
+				Namespace: ns,
+			},
+			Data: map[string][]byte{
+				"url":      []byte("another-registry"),
+				"username": []byte("another-registry-user"),
+				"password": []byte("another-registry-pwd"),
+			},
+		}}
+
+	testCases := []templatertesting.TestCase{
+		{
+			TestName:   "aks",
+			ObjectName: "tekton-container-registry-auth",
+			Property:   ".dockerconfigjson",
+			Format:     "json",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "aks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:    "aks-registry-secret",
+			ObjectName:  "tekton-container-registry-auth",
+			Property:    ".dockerconfigjson",
+			Format:      "json",
+			KubeObjects: myRegistrySecrets,
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "aks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:    "aks-another-registry-secret",
+			ObjectName:  "tekton-container-registry-auth",
+			Property:    ".dockerconfigjson",
+			Format:      "json",
+			KubeObjects: anotherRegistrySecrets,
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "aks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:   "aws",
+			ObjectName: "tekton-container-registry-auth",
+			Property:   ".dockerconfigjson",
+			Format:     "json",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "aws",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:   "aws-other-git",
+			ObjectName: "tekton-container-registry-auth",
+			Property:   ".dockerconfigjson",
+			Format:     "json",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   "https://git.myserver.com",
+					Provider:    "aws",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:   "eks",
+			ObjectName: "tekton-container-registry-auth",
+			Property:   ".dockerconfigjson",
+			Format:     "json",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "eks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:   "eks-other-git",
+			ObjectName: "tekton-container-registry-auth",
+			Property:   ".dockerconfigjson",
+			Format:     "json",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   "https://git.myserver.com",
+					Provider:    "eks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:    "eks-my-registry-secret",
+			ObjectName:  "tekton-container-registry-auth",
+			Property:    ".dockerconfigjson",
+			Format:      "json",
+			KubeObjects: myRegistrySecrets,
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "eks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:    "eks-my-registry-secret-other-git",
+			ObjectName:  "tekton-container-registry-auth",
+			Property:    ".dockerconfigjson",
+			Format:      "json",
+			KubeObjects: myRegistrySecrets,
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   "https://git.myserver.com",
+					Provider:    "eks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:    "eks-another-registry-secret",
+			ObjectName:  "tekton-container-registry-auth",
+			Property:    ".dockerconfigjson",
+			Format:      "json",
+			KubeObjects: anotherRegistrySecrets,
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "my-registry",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "eks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+
+		{
+			TestName:   "gke",
+			ObjectName: "tekton-container-registry-auth",
+			Property:   ".dockerconfigjson",
+			Format:     "json",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "gke",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+		{
+			TestName:   "minikube",
+			ObjectName: "tekton-container-registry-auth",
+			Property:   ".dockerconfigjson",
+			Format:     "json",
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "minikube",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+	}
+	if generateTestOutput {
+		for i := range testCases {
+			testCases[i].GenerateTestOutput = true
+		}
+	}
+	runner := templatertesting.Runner{
+		TestCases:   testCases,
+		SchemaFile:  filepath.Join("..", "charts", "jx3", "jxboot-helmfile-resources", "secret-schema.yaml"),
+		Namespace:   ns,
+		KubeObjects: testSecrets,
+	}
+	runner.Run(t)
+}
+
+func TestSecretSchemaTemplatesBucketRepo(t *testing.T) {
+	testSecrets := []runtime.Object{}
+
+	testCases := []templatertesting.TestCase{
+		{
+			TestName:   "bucketrepo",
+			ObjectName: "bucketrepo-config",
+			Property:   "config.yaml",
+			Format:     "yaml",
+			Requirements: &config.RequirementsConfig{
+				Repository: "bucketrepo",
+				Cluster: config.ClusterConfig{
+					Provider:    "minikube",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
+	}
+	if generateTestOutput {
+		for i := range testCases {
+			testCases[i].GenerateTestOutput = true
+		}
+	}
+	runner := templatertesting.Runner{
+		TestCases:   testCases,
+		SchemaFile:  filepath.Join("..", "charts", "jenkins-x", "bucketrepo", "secret-schema.yaml"),
 		Namespace:   ns,
 		KubeObjects: testSecrets,
 	}

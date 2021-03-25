@@ -14,7 +14,7 @@ releases:
   values:
   - jx-values.yaml
 - chart: elastic/eck-operator
-  version: 1.3.1
+  version: 1.4.0
   name: eck-operator
   values:
   - jx-values.yaml

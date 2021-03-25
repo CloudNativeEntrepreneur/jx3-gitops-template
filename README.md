@@ -64,7 +64,7 @@ CRDs for declaratively controlling RBAC for your cluster.
 
 ## helmfiles/secret-infra
 
-Vault to store secrets, Kubernetes External Secrets to use them, and Pusher Wave for secret rotation.
+Kubernetes External Secrets to read from Vault or GSM, and Pusher Wave for secret rotation.
 
 ## tekton-pipelines
 
@@ -124,10 +124,10 @@ jx secret vault portforward
 Then, in a second terminal
 
 ```bash
-export VAULT_TOKEN=$(kubectl get secrets vault-unseal-keys  -n secret-infra -o jsonpath={.data.vault-root} | base64 --decode)
+export VAULT_TOKEN=$(kubectl get secrets vault-unseal-keys  -n jx-vault -o jsonpath={.data.vault-root} | base64 --decode)
 
 # Tell the CLI that the Vault Cert is signed by a custom CA
-kubectl get secret vault-tls -n secret-infra -o jsonpath="{.data.ca\.crt}" | base64 --decode > $PWD/secret/vault/vault-ca.crt
+kubectl get secret vault-tls -n jx-vault -o jsonpath="{.data.ca\.crt}" | base64 --decode > $PWD/secret/vault/vault-ca.crt
 export VAULT_CACERT=$PWD/secret/vault/vault-ca.crt
 
 # Tell the CLI where Vault is listening (the certificate has 127.0.0.1 as well as alternate names)

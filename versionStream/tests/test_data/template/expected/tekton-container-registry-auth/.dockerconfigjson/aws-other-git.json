@@ -1,0 +1,7 @@
+{
+
+  "credsStore": "ecr-login",
+
+  "auths":{
+  }
+}

@@ -20,15 +20,23 @@ releases:
   - jx-values.yaml
   - values.yaml
 - chart: bitnami/redis
-  version: 12.3.2
+  version: 12.6.2
   name: auth-redis
   values:
   - jx-values.yaml
+  - values.redis.yaml
 - chart: ./charts/oauth2proxy
   version: 0.0.1
   name: oauth2proxy
   values:
   - jx-values.yaml
+  - values.yaml
+- chart: ./charts/auth-redis-config
+  version: 0.0.1
+  name: auth-redis-config
+  values:
+  - jx-values.yaml
+  - values.redis.yaml
   - values.yaml
 templates: {}
 renderedvalues: {}

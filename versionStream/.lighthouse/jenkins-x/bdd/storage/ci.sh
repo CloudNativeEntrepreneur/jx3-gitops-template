@@ -15,7 +15,7 @@ export GH_USERNAME="jenkins-x-labs-bot"
 export GH_EMAIL="jenkins-x@googlegroups.com"
 export GH_OWNER="jenkins-x-bdd"
 
-export PROJECT_ID=jenkins-x-labs-bdd
+export PROJECT_ID=jenkins-x-labs-bdd1
 export CREATED_TIME=$(date '+%a-%b-%d-%Y-%H-%M-%S')
 export CLUSTER_NAME="${BRANCH_NAME,,}-$BUILD_NUMBER-bdd-storage"
 export ZONE=europe-west1-c

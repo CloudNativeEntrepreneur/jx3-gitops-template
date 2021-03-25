@@ -1,13 +1,13 @@
-gcactivities:
-  podAnnotations:
-    sidecar.istio.io/inject: "false"
-
-gcpods:
-  podAnnotations:
-    sidecar.istio.io/inject: "false"
+gc:
+  activities:
+    annotations:
+      sidecar.istio.io/inject: "false"
+  pods:
+    annotations:
+      sidecar.istio.io/inject: "false"
 
 istio:
   enabled: true
   createGateway: false
   gateway:
-    name: istio-system/wildcard-jx-example-com
+    name: istio-system/wildcard-example-com

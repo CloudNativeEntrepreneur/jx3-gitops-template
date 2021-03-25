@@ -4,7 +4,7 @@ clusters:
   - create
   - cluster
   - gke
-  - --project-id=jenkins-x-labs-bdd
+  - --project-id=jenkins-x-labs-bdd1
   - -m=n1-standard-2
   - --min-num-nodes=3
   - --max-num-nodes=5

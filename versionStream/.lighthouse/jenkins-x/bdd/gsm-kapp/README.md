@@ -1,0 +1,1 @@
+## BDD test GKE + Google Secret Manager with Kapp

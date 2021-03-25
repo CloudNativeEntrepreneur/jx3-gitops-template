@@ -1,0 +1,6 @@
+config:
+  cache:
+    dir: ./
+
+podAnnotations:
+  sidecar.istio.io/inject: "false"

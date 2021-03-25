@@ -19,29 +19,37 @@ controller:
   # List of plugins to be install during Jenkins controller start
   # lets upgrade git for github-branch-source
   installPlugins:
-    - kubernetes:1.27.6
+    - kubernetes:1.29.2
     - workflow-aggregator:2.6
-    - git:4.5.2
-    - configuration-as-code:1.46
+    - git:4.7.0
+    - configuration-as-code:1.47
 
   additionalPlugins:
   # enable the job DSL so we can use JCasC and GitOps to populate jobs
   - job-dsl:1.77
 
   # allow github multi branch projects to be used
-  - github-branch-source:2.9.2
+  - github-branch-source:2.10.2
 
   # allow jenkins to get credentials from kubernetes secrets & support External Secrets for vault / cloud secret managers
-  - kubernetes-credentials-provider:0.15
+  - kubernetes-credentials-provider:0.16
 
   # jobs get reported as PipelineActivity resources so they appear in the jx UIs like octant
   - jx-resources:1.0.38
+
+  # tekton catalog plugin
+  #- tekton-client:1.0-alpha3+111
 
 
   ingress:
     enabled: true
 {{- if .Values.jxRequirements.ingress.domain }}
     hostName: "jenkins{{ .Values.jxRequirements.ingress.namespaceSubDomain | default "." }}{{ .Values.jxRequirements.ingress.domain }}"
+{{- end }}
+{{- if .Values.jxRequirements.ingress.tls.enabled }}
+    tls:
+    - hosts:
+        - "jenkins{{ .Values.jxRequirements.ingress.namespaceSubDomain | default "." }}{{ .Values.jxRequirements.ingress.domain }}"
 {{- end }}
   sidecars:
     configAutoReload:

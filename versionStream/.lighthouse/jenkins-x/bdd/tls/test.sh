@@ -11,4 +11,4 @@ export PATH=$PATH:/usr/local/bin
 kubectl get clusterissuer letsencrypt-staging -ojsonpath='{.status.conditions[0].status}'
 kubectl get clusterissuer letsencrypt-staging -ojsonpath='{.status.conditions[0].message}'
 
-jx verify tls hook-jx.$CLUSTER_NAME.jenkinsxlabs.com  --production=false --timeout 20m
+jx verify tls hook-jx.$CLUSTER_NAME.jenkinsxlabs.com  --production=false --timeout 20m --issuer "(STAGING) Artificial Apricot R3"

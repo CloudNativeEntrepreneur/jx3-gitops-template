@@ -6,7 +6,7 @@ else
     exit 1
 fi
 
-VAULT_TOKEN=$(kubectl get secrets vault-unseal-keys  -n secret-infra -o jsonpath={.data.vault-root} | base64 --decode)
+VAULT_TOKEN=$(kubectl get secrets vault-unseal-keys  -n jx-vault -o jsonpath={.data.vault-root} | base64 --decode)
 VAULT_CACERT=$PWD/secret/vault/vault-ca.crt
 VAULT_ADDR=https://127.0.0.1:8200
 

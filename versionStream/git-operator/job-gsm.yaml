@@ -24,7 +24,7 @@ spec:
         env:
         - name: XDG_CONFIG_HOME
           value: /workspace/xdg_config
-        image: gcr.io/jenkinsxio/jx-boot:3.1.148
+        image: ghcr.io/jenkins-x/jx-boot:3.1.335
         name: git-clone
         volumeMounts:
         - mountPath: /workspace
@@ -32,33 +32,19 @@ spec:
         workingDir: /workspace
       containers:
       - args:
-        - make apply || make failed
+        - apply
         command:
-        - /bin/sh
-        - -c
+        - make
         env:
         - name: XDG_CONFIG_HOME
           value: /workspace/xdg_config
-        - name: JX_SECRET_SIDECAR
-          value: gsm
-        - name: JX_SECRET_TMP_DIR
-          value: /workspace/source/.jx-secrets
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        image: gcr.io/jenkinsxio/jx-boot:3.1.148
+        envFrom:
+        - secretRef:
+            name: jx-boot-job-env-vars
+            optional: true
+        image: ghcr.io/jenkins-x/jx-boot:3.1.335
         imagePullPolicy: Always
         name: job
-        volumeMounts:
-        - mountPath: /workspace
-          name: workspace-volume
-        workingDir: /workspace/source
-      - command:
-        - versionStream/src/wait-for-complete.sh
-        image: google/cloud-sdk:slim
-        imagePullPolicy: Always
-        name: gsm
         volumeMounts:
         - mountPath: /workspace
           name: workspace-volume

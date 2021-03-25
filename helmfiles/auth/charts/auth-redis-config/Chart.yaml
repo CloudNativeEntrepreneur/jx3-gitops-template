@@ -1,0 +1,4 @@
+apiVersion: v1
+description: auth-redis-config
+name: auth-redis-config
+version: 0.0.1

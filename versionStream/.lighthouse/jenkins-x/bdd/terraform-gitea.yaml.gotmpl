@@ -1,0 +1,83 @@
+apiVersion: tf.isaaguilar.com/v1alpha1
+kind: Terraform
+spec:
+  env:
+  - name: KUBECONFIG
+    value: "/tmp/kubecfg"
+  - name: TF_VAR_gsm
+    value: "true"
+  - name: TF_VAR_jx_bot_username
+    value: jenkins-x-test-bot
+  - name: GIT_USERNAME
+    value: jenkins-x-test-bot
+{{- range $pkey, $pval := .Env }}
+  - name: {{ $pkey }}
+    value: {{ quote $pval }}
+{{- end }}
+
+  terraformRunner: ghcr.io/jenkins-x/terraform-operator-gcp
+  terraformVersion: 3.1.335
+
+  terraformModule:
+    address: https://github.com/jx3-gitops-repositories/jx3-terraform-gke
+
+  customBackend: |-
+    terraform {
+      backend "kubernetes" {
+        secret_suffix = "{{ .Name }}-state"
+        namespace = "{{ .Namespace }}"
+        in_cluster_config = true
+      }
+    }
+
+  serviceAccount: tekton-bot
+
+  applyOnCreate: true
+  applyOnUpdate: true
+  applyOnDelete: true
+  ignoreDelete: false
+
+
+  postrunScript: |-
+    #!/bin/bash
+    set -e
+    set -x
+
+    echo "Terraform is done!"
+
+    echo "lets connect to the remote cluster"
+    $(terraform output -raw connect)
+
+    echo "now connected to cluster:"
+    jx ctx -b
+
+    echo "using jx version: $JX_VERSION"
+
+    # verify we have the correct context
+    jx verify ctx -c "gke_${TF_VAR_gcp_project}_us-central1-a_${TF_VAR_cluster_name}"
+
+    echo "lets setup gitea..."
+    # lets setup the cluster...
+    git clone https://github.com/jx3-gitops-repositories/jx3-gke-gsm-gitea
+    cd jx3-gke-gsm-gitea
+    ./setup.sh create
+
+
+    echo "variables are:"
+    cat variables.sh
+    source variables.sh
+
+    echo "using git server ${GIT_SERVER_URL} user: ${GIT_USER} and token: ${GIT_TOKEN}"
+
+    echo "installing the BDD test"
+    export GIT_KIND="gitea"
+    export GIT_ORGANISATION="coders"
+    export TEST_NAME="test-create-spring"
+    echo "PATH=$PATH"
+    helm version
+    helm repo add jx3 https://storage.googleapis.com/jenkinsxio/charts
+    helm upgrade --install bdd jx3/jx-bdd  --namespace jx --create-namespace --set bdd.approverSecret="bdd-git-gitea-approver",bdd.kind="$GIT_KIND",bdd.owner="$GIT_ORGANISATION",bdd.gitServerHost="$GIT_SERVER_HOST",bdd.gitServerURL="$GIT_SERVER_URL",command.test="make $TEST_NAME",jxgoTag="$JX_VERSION",bdd.user="${GIT_USER}",bdd.token="${GIT_TOKEN}"
+
+    echo "about to wait for the BDD test to run"
+    sleep 20
+    jx verify job --name jx-bdd -n jx --log-fail

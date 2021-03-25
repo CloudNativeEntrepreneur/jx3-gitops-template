@@ -2,22 +2,61 @@ apiVersion: config.lighthouse.jenkins-x.io/v1alpha1
 kind: TriggerConfig
 spec:
   presubmits:
+  - name: bbc
+    context: "bbc"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| bbc),?(s+|$)
+    rerun_command: /test bbc
+    source: "pullrequest-bbc.yaml"
+  - name: bbs
+    context: "bbs"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| bbs),?(s+|$)
+    rerun_command: /test bbs
+    source: "pullrequest-bbs.yaml"
+  - name: eks
+    context: "eks"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| eks),?(s+|$)
+    rerun_command: /test eks
+    source: "pullrequest-eks.yaml"
   - name: ghe
     context: "ghe"
     always_run: false
     optional: false
     trigger: (?m)^/test( all| ghe),?(s+|$)
     rerun_command: /test ghe
-    source: "pullrequest.yaml"
-    pipeline_run_params:
-    - name: "BDD_GIT_TOKEN_SECRET"
-      value_template: "bdd-pipeline-token-github-ghe"
+    source: "pullrequest-ghe.yaml"
+  - name: gitlab
+    context: "gitlab"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| gitlab),?(s+|$)
+    rerun_command: /test gitlab
+    source: "pullrequest-gitlab.yaml"
+  - name: gitea
+    context: "gitea"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| gitea),?(s+|$)
+    rerun_command: /test gitea
+    source: "pullrequest-gitea.yaml"
   - name: gsm
     context: "gsm"
     always_run: true
     optional: false
     trigger: (?m)^/test( all| gsm),?(s+|$)
     rerun_command: /test gsm
+    source: "pullrequest.yaml"
+  - name: gsm-kapp
+    context: "gsm-kapp"
+    always_run: true
+    optional: false
+    trigger: (?m)^/test( all| gsm-kapp),?(s+|$)
+    rerun_command: /test gsm-kapp
     source: "pullrequest.yaml"
   - name: tls
     context: "tls"
@@ -32,6 +71,13 @@ spec:
     optional: false
     trigger: (?m)^/test( all| vault),?(s+|$)
     rerun_command: /test vault
+    source: "pullrequest.yaml"
+  - name: vault-kapp
+    context: "vault-kapp"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| vault-kapp),?(s+|$)
+    rerun_command: /test vault-kapp
     source: "pullrequest.yaml"
   - name: kube
     context: "kube"

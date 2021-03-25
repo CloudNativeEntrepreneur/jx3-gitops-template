@@ -66,10 +66,10 @@ spec:
     language: HTML
     name: rollout-app
     version: 1.0.0+953a29100
-  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/rust-http/zip/6a2f622ca
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/rust-http/zip/807a6a5
     language: Rust
     name: rust-http
-    version: 1.0.0+6a2f622ca
+    version: 1.0.0+807a6a5
   - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/scala-akka-http-quickstart/zip/d52c41a04
     language: Scala
     name: scala-akka-http-quickstart

@@ -13,6 +13,6 @@ jobs:
     - env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       name: updatebot
-      uses: docker://gcr.io/jenkinsxio/jx-updatebot:0.0.45
+      uses: docker://gcr.io/jenkinsxio/jx-updatebot:0.0.53
       with:
         args: pr -c .github/workflows/update-charts/updatebot.yaml --no-version --git-credentials

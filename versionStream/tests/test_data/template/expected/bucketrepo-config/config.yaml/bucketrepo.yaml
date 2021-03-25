@@ -1,0 +1,21 @@
+http:
+  addr: ":8080"
+  username: ""
+  password: ""
+  chartPath: "charts"
+storage:
+  bucket_url: ""
+cache:
+  base_dir: "./"
+repositories:
+- url: "https://repo.maven.org/maven2"
+- url: "https://repo1.maven.org/maven2"
+- url: "https://services.gradle.org/distributions/"
+- url: "https://plugins.gradle.org/m2/"
+- url: "https://repo.jenkins-ci.org/public/"
+- url: "https://repo.jenkins-ci.org/releases/"
+- url: "https://jitpack.io/"
+- url: "https://registry.npmjs.org/"
+- url: "https://repo.spring.io/milestone/"
+- url: "https://repo.spring.io/release/"
+- url: "http://uk.maven.org/maven2/"

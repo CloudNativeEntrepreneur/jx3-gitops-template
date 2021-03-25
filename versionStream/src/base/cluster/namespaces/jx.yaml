@@ -5,5 +5,4 @@ metadata:
     env: dev
     team: jx
     certmanager.k8s.io/disable-validation: "true"
-    istio-injection: enabled
   name: jx

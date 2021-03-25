@@ -17,7 +17,7 @@ export GH_EMAIL="jenkins-x@googlegroups.com"
 export GH_OWNER="jenkins-x-bdd"
 
 export CREATED_TIME=$(date '+%a-%b-%d-%Y-%H-%M-%S')
-export PROJECT_ID=jenkins-x-labs-bdd
+export PROJECT_ID=jenkins-x-labs-bdd1
 export CLUSTER_NAME="${BRANCH_NAME,,}-$BUILD_NUMBER-bdd-mc"
 export ZONE=europe-west1-c
 export LABELS="branch=${BRANCH_NAME,,},cluster=bdd-mc,create-time=${CREATED_TIME,,}"

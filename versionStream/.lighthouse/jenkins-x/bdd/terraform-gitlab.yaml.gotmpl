@@ -1,0 +1,87 @@
+apiVersion: tf.isaaguilar.com/v1alpha1
+kind: Terraform
+spec:
+  env:
+  - name: KUBECONFIG
+    value: "/tmp/kubecfg"
+  - name: TF_VAR_jx_git_url
+    value: https://gitlab.com/jxbdd/cluster-{{ .Env.TF_VAR_cluster_name }}-dev.git
+  - name: TF_VAR_jx_bot_username
+    value: jenkins-x-bot-test
+  - name: TF_VAR_jx_bot_token
+    valueFrom:
+      secretKeyRef:
+        name: bdd-git-gitlab
+        key: password
+{{- range $pkey, $pval := .Env }}
+  - name: {{ $pkey }}
+    value: {{ quote $pval }}
+{{- end }}
+
+  scmAuthMethods:
+  - host: gitlab.com
+    git:
+      https:
+        requireProxy: false
+        tokenSecretRef:
+          name: bdd-git-gitlab
+          namespace: jx
+          key: password
+
+  terraformRunner: ghcr.io/jenkins-x/terraform-operator-gcp
+  terraformVersion: 3.1.335
+
+  terraformModule:
+    address: https://jenkins-x-bot-test@gitlab.com/jxbdd/infra-{{ .Env.TF_VAR_cluster_name }}-dev.git
+
+  customBackend: |-
+    terraform {
+      backend "kubernetes" {
+        secret_suffix = "{{ .Name }}-state"
+        namespace = "{{ .Namespace }}"
+        in_cluster_config = true
+      }
+    }
+
+  serviceAccount: tekton-bot
+
+  applyOnCreate: true
+  applyOnUpdate: true
+  applyOnDelete: true
+  ignoreDelete: false
+
+
+  postrunScript: |-
+    #!/bin/bash
+    set -e
+    set -x
+
+    echo "Terraform is done!"
+
+    echo "lets connect to the remote cluster"
+    $(terraform output -raw connect)
+
+    echo "now connected to cluster:"
+    jx ctx -b
+
+    echo "using jx version: $JX_VERSION"
+
+    # verify we have the correct context
+    jx verify ctx -c "gke_${TF_VAR_gcp_project}_us-central1-a_${TF_VAR_cluster_name}"
+
+    echo "lets verify the log completes"
+    jx admin log -b
+    
+    echo "installing the BDD test"
+    export GIT_KIND="gitlab"
+    export GIT_ORGANISATION="jxbdd"
+    export GIT_SERVER_HOST="gitlab.com"
+    export GIT_SERVER_URL="https://${GIT_SERVER_HOST}"
+    export TEST_NAME="test-create-spring"
+    helm version
+    helm repo add jx3 https://storage.googleapis.com/jenkinsxio/charts
+    helm upgrade --install bdd jx3/jx-bdd  --namespace jx --create-namespace --set bdd.approverSecret="bdd-git-gitlab-approver",bdd.kind="$GIT_KIND",bdd.owner="$GIT_ORGANISATION",bdd.gitServerHost="$GIT_SERVER_HOST",bdd.gitServerURL="$GIT_SERVER_URL",command.test="make $TEST_NAME",jxgoTag="$JX_VERSION"
+
+    echo "about to wait for the BDD test to run"
+    sleep 20
+    jx verify job --name jx-bdd -n jx --log-fail
