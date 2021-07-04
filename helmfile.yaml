@@ -11,6 +11,7 @@ helmfiles:
 - path: helmfiles/knative-serving/helmfile.yaml
 - path: helmfiles/kube-system/helmfile.yaml
 - path: helmfiles/monitor/helmfile.yaml
+- path: helmfiles/nginx/helmfile.yaml
 - path: helmfiles/olm/helmfile.yaml
 - path: helmfiles/postgres-operator/helmfile.yaml
 - path: helmfiles/rbac-manager/helmfile.yaml

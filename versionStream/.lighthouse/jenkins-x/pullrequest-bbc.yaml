@@ -19,7 +19,7 @@ spec:
         steps:
         - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-pr.yaml@versionStream
           name: ""
-        - image: ghcr.io/jenkins-x/jx-cli:3.1.335
+        - image: ghcr.io/jenkins-x/jx:3.2.152
           name: jx-variables
           resources: {}
           script: |
@@ -31,7 +31,7 @@ spec:
               secretKeyRef:
                 key: password
                 name: bdd-git-bbc
-          image: ghcr.io/jenkins-x/jx-cli:3.1.335
+          image: ghcr.io/jenkins-x/jx:3.2.152
           name: runci
           resources: {}
           script: |

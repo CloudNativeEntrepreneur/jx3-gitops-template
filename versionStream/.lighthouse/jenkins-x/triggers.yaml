@@ -53,10 +53,31 @@ spec:
     source: "pullrequest.yaml"
   - name: gsm-kapp
     context: "gsm-kapp"
-    always_run: true
+    always_run: false
     optional: false
     trigger: (?m)^/test( all| gsm-kapp),?(s+|$)
     rerun_command: /test gsm-kapp
+    source: "pullrequest.yaml"
+  - name: kube
+    context: "kube"
+    always_run: true
+    optional: false
+    trigger: (?m)^/test( all| kube),?(s+|$)
+    rerun_command: /test kube
+    source: "pullrequest.yaml"
+  - name: kubevault
+    context: "kubevault"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| kubevault),?(s+|$)
+    rerun_command: /test kubevault
+    source: "pullrequest.yaml"
+  - name: multi
+    context: "multi"
+    always_run: false
+    optional: false
+    trigger: (?m)^/test( all| multi),?(s+|$)
+    rerun_command: /test multi
     source: "pullrequest.yaml"
   - name: tls
     context: "tls"
@@ -78,13 +99,6 @@ spec:
     optional: false
     trigger: (?m)^/test( all| vault-kapp),?(s+|$)
     rerun_command: /test vault-kapp
-    source: "pullrequest.yaml"
-  - name: kube
-    context: "kube"
-    always_run: true
-    optional: false
-    trigger: (?m)^/test( all| kube),?(s+|$)
-    rerun_command: /test kube
     source: "pullrequest.yaml"
   postsubmits:
   - name: release

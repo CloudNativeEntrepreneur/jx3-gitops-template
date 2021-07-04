@@ -36,10 +36,12 @@ serviceAccount:
 
 domainFilters:
 - {{ .Values.jxRequirements.ingress.domain }}
+{{- if hasKey .Values.jxRequirements "environments" }}
 {{- range $key, $val := .Values.jxRequirements.environments }}
 {{- if hasKey $val "ingress" }}
 {{- if $val.ingress.domain }}
 - "{{ $val.ingress.domain }}"
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

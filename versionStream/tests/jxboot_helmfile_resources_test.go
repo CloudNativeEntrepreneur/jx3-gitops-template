@@ -332,7 +332,25 @@ func TestSecretSchemaTemplatesContainerRegistry(t *testing.T) {
 				},
 			},
 		},
-
+		{
+			TestName:    "eks-use-ecr-with-registry",
+			ObjectName:  "tekton-container-registry-auth",
+			Property:    ".dockerconfigjson",
+			Format:      "json",
+			KubeObjects: anotherRegistrySecrets,
+			Requirements: &config.RequirementsConfig{
+				Repository: "nexus",
+				Cluster: config.ClusterConfig{
+					DestinationConfig: config.DestinationConfig{
+						Registry: "123456789012.dkr.ecr.ap-southeast-2.amazonaws.com",
+					},
+					GitServer:   giturl.GitHubURL,
+					Provider:    "eks",
+					ProjectID:   "myproject",
+					ClusterName: "mycluster",
+				},
+			},
+		},
 		{
 			TestName:   "gke",
 			ObjectName: "tekton-container-registry-auth",

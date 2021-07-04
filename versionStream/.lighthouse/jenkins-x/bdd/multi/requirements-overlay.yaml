@@ -1,0 +1,10 @@
+apiVersion: core.jenkins-x.io/v4beta1
+kind: Requirements
+spec:
+  environments:
+  - key: production
+    namespace: myapps
+    owner: jstrachan
+    promotionStrategy: Auto
+    remoteCluster: true
+    repository: jx-demo-gke2-prod

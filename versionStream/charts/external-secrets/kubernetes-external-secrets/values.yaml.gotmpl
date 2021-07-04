@@ -12,8 +12,29 @@ crds:
 replicaCount: 0
 {{- end }}
 
-{{- if eq .Values.jxRequirements.secretStorage "vault" }}
 env:
+  POLLER_INTERVAL_MILLISECONDS: 60000
+{{- if eq .Values.jxRequirements.secretStorage "secretsManager" }}
+  AWS_REGION: {{ .Values.jxRequirements.cluster.region }}
+
+securityContext:
+  fsGroup: 65534
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-external-secrets-secrets-manager
+{{- end }}
+{{- if eq .Values.jxRequirements.secretStorage "systemManager" }}
+  AWS_REGION: {{ .Values.jxRequirements.cluster.region }}
+
+securityContext:
+  fsGroup: 65534
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-external-secrets-system-manager
+{{- end }}
+{{- if eq .Values.jxRequirements.secretStorage "vault" }}
   VAULT_ADDR: https://vault.jx-vault:8200
   NODE_EXTRA_CA_CERTS: "/usr/local/share/ca-certificates/ca.crt"
 

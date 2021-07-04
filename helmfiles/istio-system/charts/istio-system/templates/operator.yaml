@@ -5,7 +5,11 @@ metadata:
   name: istio-main
 spec:
   profile: default
-  tag: 1.8.1
+  tag: 1.9.5
+  meshConfig:
+    defaultConfig:
+      gatewayTopology:
+        numTrustedProxies: 2
   values:
     global:
       proxy:
@@ -22,21 +26,4 @@ spec:
           serviceAnnotations:
             service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
             external-dns.alpha.kubernetes.io/hostname: >-
-              *.{{ $domain }}{{- range $subdomain := .Values.subdomains }},*.{{ $subdomain.name }}.{{ $domain }}{{- end }}
-      - name: cluster-local-gateway
-        enabled: true
-        label:
-          istio: cluster-local-gateway
-          app: cluster-local-gateway
-        k8s:
-          service:
-            type: ClusterIP
-            ports:
-            - port: 15020
-              name: status-port
-            - port: 80
-              targetPort: 8080
-              name: http2
-            - port: 443
-              targetPort: 8443
-              name: https
+              auth.example.com{{- range $subdomain := .Values.subdomains }},*.{{ $subdomain.name }}.{{ $domain }}{{- end }}

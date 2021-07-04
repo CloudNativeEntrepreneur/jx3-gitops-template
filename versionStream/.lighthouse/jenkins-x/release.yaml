@@ -1,8 +1,6 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  annotations:
-    lighthouse.jenkins-x.io/prependStepsURL: https://raw.githubusercontent.com/jenkins-x/jx3-pipeline-catalog/005e78cf69b643862344397a635736a51dd1bd89/tasks/git-clone/git-clone.yaml
   creationTimestamp: null
   name: release
 spec:
@@ -13,6 +11,7 @@ spec:
       taskSpec:
         metadata: {}
         stepTemplate:
+          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/go-plugin/release.yaml@versionStream
           name: ""
           resources: {}
           volumeMounts:
@@ -21,25 +20,14 @@ spec:
             readOnly: true
           workingDir: /workspace/source
         steps:
-        - image: gcr.io/jenkinsxio/builder-jx:2.1.142-761
-          name: next-version
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
+          name: ""
           resources: {}
-          script: |
-            #!/usr/bin/env bash
-            jx step next-version --use-git-tag-only --tag
-        - image: ghcr.io/jenkins-x/jx-cli:3.1.335
-          name: jx-variables
+        - name: next-version
           resources: {}
-          script: |
-            #!/usr/bin/env bash
-            jx gitops variables
-        - image: gcr.io/jenkinsxio/builder-jx:2.1.142-761
-          name: get-jx-prerelease-state
+        - name: jx-variables
           resources: {}
-          script: |
-            #!/bin/sh
-            ./.lighthouse/jenkins-x/release/get-jx-prerelease-state.sh
-        - image: gcr.io/jenkinsxio/jx-scm:0.0.7
+        - image: ghcr.io/jenkins-x/jx-scm:0.0.28
           name: release-jx-cli
           resources: {}
           env:
@@ -52,16 +40,14 @@ spec:
                 key: password
           script: |
             #!/bin/sh
-            export JX_VERSION=$(grep 'version: ' packages/jx-cli.yml | awk '{ print $2}')
-            jx scm release update --owner jenkins-x --name jx-cli --tag v$JX_VERSION --prerelease=false --kind github --server https://github.com --token $GITHUB_TOKEN
-        - image: gcr.io/jenkinsxio/jx-changelog:0.0.11
-          name: changelog
+            export JX_VERSION=$(grep 'version: ' packages/jx.yml | awk '{ print $2}')
+            export LH_VERSION=$(grep 'version: ' charts/jx3/lighthouse/defaults.yaml | awk '{ print $2}')
+            echo "using versions JX: ${JX_VERSION} lighthouse: ${LH_VERSION}"
+            jx scm release update --owner jenkins-x --name jx --tag v$JX_VERSION --prerelease=false --kind github --server https://github.com --token $GITHUB_TOKEN
+            jx scm release update --owner jenkins-x --name lighthouse --tag v$LH_VERSION --prerelease=false --kind github --server https://github.com --token $GITHUB_TOKEN
+        - name: changelog
           resources: {}
-          script: |
-            #!/bin/sh
-            source .jx/variables.sh
-            jx changelog create --verbose --version ${VERSION} --rev v${VERSION}
-        - image: ghcr.io/jenkins-x/jx-cli:3.1.335
+        - image: ghcr.io/jenkins-x/jx:3.2.152
           name: promote-vs
           resources: {}
           script: |

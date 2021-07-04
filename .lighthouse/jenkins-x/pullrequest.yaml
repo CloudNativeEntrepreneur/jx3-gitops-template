@@ -1,8 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  annotations:
-    lighthouse.jenkins-x.io/prependStepsURL: https://raw.githubusercontent.com/jenkins-x/jx3-pipeline-catalog/60bed6408732c1eda91a15713f51a9f97dcb1757/tasks/git-clone/git-clone-pr.yaml
+  creationTimestamp: null
   name: pullrequest
 spec:
   pipelineSpec:
@@ -12,11 +11,7 @@ spec:
       taskSpec:
         metadata: {}
         stepTemplate:
-          env:
-          - name: PIPELINE_KIND
-            value: pullrequest
-          - name: JX_BATCH_MODE
-            value: "true"
+          image: uses:jenkins-x/jx3-pipeline-catalog/tasks/environment/pullrequest.yaml@versionStream
           name: ""
           resources:
             requests:
@@ -24,14 +19,11 @@ spec:
               memory: 512Mi
           workingDir: /workspace/source
         steps:
-        - args:
-          - pr
-          command:
-          - make
-          image: gcr.io/jenkinsxio/jx-boot:3.1.152
-          name: make-pr
+        - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone-env-pr.yaml@versionStream
+          resources: {}
+        - name: make-pr
           resources: {}
   podTemplate: {}
   serviceAccountName: tekton-bot
-  timeout: 240h0m0s
+  timeout: 12h0m0s
 status: {}

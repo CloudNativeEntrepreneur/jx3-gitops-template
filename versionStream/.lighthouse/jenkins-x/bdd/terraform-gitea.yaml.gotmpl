@@ -16,7 +16,7 @@ spec:
 {{- end }}
 
   terraformRunner: ghcr.io/jenkins-x/terraform-operator-gcp
-  terraformVersion: 3.1.335
+  terraformVersion: 3.2.152
 
   terraformModule:
     address: https://github.com/jx3-gitops-repositories/jx3-terraform-gke
@@ -44,6 +44,13 @@ spec:
     set -x
 
     echo "Terraform is done!"
+
+    echo "Removing kubernetes resources from state"
+    terraform state rm 'module.jx.module.cluster.helm_release.jx-git-operator[0]'
+    terraform state rm 'module.jx.module.cluster.kubernetes_config_map.jenkins_x_requirements[0]'
+    terraform state rm 'module.jx.module.cluster.module.jx-health[0].helm_release.cluster-checks'
+    terraform state rm 'module.jx.module.cluster.module.jx-health[0].helm_release.health-checks-install'
+    terraform state rm 'module.jx.module.cluster.module.jx-health[0].helm_release.kuberhealthy'
 
     echo "lets connect to the remote cluster"
     $(terraform output -raw connect)

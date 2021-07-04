@@ -5,11 +5,11 @@ environments:
     - jx-values.yaml
 namespace: istio-system
 repositories:
-- name: jx3
-  url: https://storage.googleapis.com/jenkinsxio/charts
+- name: kiali
+  url: https://kiali.org/helm-charts
 releases:
 - chart: ./charts/istio-system
-  version: 1.1.0
+  version: 1.6.0
   name: istio-system
   values:
   - jx-values.yaml

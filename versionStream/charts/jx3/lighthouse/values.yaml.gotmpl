@@ -15,12 +15,16 @@ service:
   
 replicaCount: 2
 
+{{- if eq .Values.jxRequirements.cluster.provider "gke" }}
+logFormat: "stackdriver"
+{{- end }}
+
 tektoncontroller:
   dashboardURL: "http://dashboard{{ .Values.jxRequirements.ingress.namespaceSubDomain }}{{ .Values.jxRequirements.ingress.domain }}"
   dashboardTemplate: "namespaces/{{"{{"}} .Namespace {{"}}"}}/pipelineruns/{{"{{"}} .PipelineRun {{"}}"}}"
 
 env:
-  JX_DEFAULT_IMAGE: gcr.io/jenkinsxio/builder-maven:2.1.142-761
+  JX_DEFAULT_IMAGE: ghcr.io/jenkins-x/builder-maven:2.1.149-768
   LIGHTHOUSE_DASHBOARD_TEMPLATE: "namespaces/{{"{{"}} .Namespace {{"}}"}}/pipelineruns/{{"{{"}} .PipelineRun {{"}}"}}"
   DEFAULT_PIPELINE_RUN_SERVICE_ACCOUNT: tekton-bot
   DEFAULT_PIPELINE_RUN_TIMEOUT: "2h0m0s"
@@ -38,13 +42,13 @@ keeper:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9090"
   env:
-    LIGHTHOUSE_TRIGGER_ON_MISSING: disable
+    LIGHTHOUSE_TRIGGER_ON_MISSING: enable
 {{- if eq .Values.jxRequirements.cluster.gitKind "bitbucketserver" }}
     GIT_CLONE_PATH_PREFIX: "scm"
 {{- end }}
 
 image:
-  repository: gcr.io/jenkinsxio/lighthouse
+  repository: ghcr.io/jenkins-x/lighthouse
 
 vault:
 {{- if eq .Values.jxRequirements.secretStorage "vault" }}
@@ -77,7 +81,3 @@ webhooks:
     prometheus.io/scrape: "true"
     prometheus.io/port: "2112"
   customDeploymentTriggerCommand: "jx"
-
-# TODO remove once https://github.com/jenkins-x/lighthouse/pull/1259 is merged
-podAnnotations:
-  key: value

@@ -5,31 +5,26 @@ spec:
     enabled: false
     schedule: ""
   cluster:
-    chartRepository: http://bucketrepo.jx.svc.cluster.local/bucketrepo/charts
-    clusterName: kind
     devEnvApprovers:
     - todo
     environmentGitOwner: todo
     gitKind: github
     gitName: github
     gitServer: https://github.com
-    provider: kubernetes
-    registry: ghcr.io
+    provider: eks
   environments:
   - key: dev
   - key: staging
   - key: production
   ingress:
     domain: ""
-    kind: istio
     externalDNS: false
     namespaceSubDomain: -jx.
     tls:
       email: ""
       enabled: false
       production: false
-  repository: bucketrepo
+  repository: nexus
   secretStorage: vault
   vault: {}
-  terraform: true
   webhook: lighthouse

@@ -1,0 +1,12 @@
+- namespace: cert-manager
+  path: helmfiles/cert-manager/helmfile.yaml
+- namespace: jx
+  path: helmfiles/jx/helmfile.yaml
+- namespace: kuberhealthy
+  path: helmfiles/kuberhealthy/helmfile.yaml
+- namespace: nginx
+  path: helmfiles/nginx/helmfile.yaml
+- namespace: secret-infra
+  path: helmfiles/secret-infra/helmfile.yaml
+- namespace: tekton-pipelines
+  path: helmfiles/tekton-pipelines/helmfile.yaml

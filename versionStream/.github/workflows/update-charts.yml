@@ -11,8 +11,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - env:
-        GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        XDG_CONFIG_HOME: /tmp/git
+        GIT_TOKEN: ${{ secrets.GIT_BOT_TOKEN }}
       name: updatebot
-      uses: docker://gcr.io/jenkinsxio/jx-updatebot:0.0.53
+      uses: docker://ghcr.io/jenkins-x/jx-updatebot:0.0.75
       with:
         args: pr -c .github/workflows/update-charts/updatebot.yaml --no-version --git-credentials
+          --git-token ${{ secrets.GIT_BOT_TOKEN }} --git-username jenkins-x-bot-test
+          --git-user-name jenkins-x-bot-test

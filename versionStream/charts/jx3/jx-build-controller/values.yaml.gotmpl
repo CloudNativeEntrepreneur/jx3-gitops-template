@@ -8,6 +8,13 @@ serviceaccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:role/{{ .Values.jxRequirements.cluster.clusterName }}-build-ctrl
 {{- end }}
 
+
+{{- if eq .Values.jxRequirements.cluster.provider "gke" }}
+log:
+  # json or stackdriver are the common values
+  format: "stackdriver"
+{{- end }}
+
 env:
 {{- if and (eq .Values.jxRequirements.cluster.provider "eks") (hasKey .Values.jxRequirements.cluster "region") }}
   AWS_REGION: {{ .Values.jxRequirements.cluster.region }}
@@ -19,3 +26,5 @@ env:
   {{- end }}
 {{- end }}
   GIT_SECRET_SERVER: {{ .Values.jxRequirements.cluster.gitServer }}
+  TRACES_EXPORTER_TYPE: "jaeger:http:thrift"
+  TRACES_EXPORTER_ENDPOINT: "tempo.jx-observability:14268"

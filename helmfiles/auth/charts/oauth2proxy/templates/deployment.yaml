@@ -15,7 +15,7 @@ spec:
         k8s-app: oauth2proxy
     spec:
       containers:
-        - image: quay.io/oauth2-proxy/oauth2-proxy:v6.1.1
+        - image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.3
           imagePullPolicy: Always
           name: oauth2-proxy
           ports:

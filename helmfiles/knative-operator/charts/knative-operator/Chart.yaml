@@ -1,5 +1,5 @@
 apiVersion: v1
 description: Knative Operator via releases page https://github.com/knative/operator/releases/
 name: knative-operator
-version: 1.0.0
-appVersion: 0.19.2
+version: 1.1.0
+appVersion: 0.23.0

@@ -7,18 +7,25 @@ echo "promoting changes in jx3-gitops-template to downstream templates"
 
 declare -a repos=(
   # local
-  "jx3-kubernetes" "jx3-kubernetes-bbc" "jx3-kubernetes-istio" "jx3-kind" "jx3-minikube" "jx3-docker-vault"
+  "jx3-kubernetes" "jx3-kubernetes-production" "jx3-kubernetes-bbc" "jx3-kubernetes-istio" "jx3-kubernetes-minio" "jx3-kubernetes-vault" "jx3-kind" "jx3-minikube" "jx3-docker-vault"
   # GKE
   "jx3-gke-vault" "jx3-gke-gsm" "jx3-gke-gsm-gitea" "jx3-gke-gcloud-vault"
   # EKS
-  "jx3-eks-terraform-vault" "jx3-eks-vault"
+  "jx3-eks-asm" "jx3-eks-vault"  
   # Azure
   "jx3-azure-vault" "jx3-azure-akv"
   # OpenShift
   "jx3-openshift" "jx3-openshift-crc"
-  # IKS
-  "jx3-iks"
+  # other clouds
+  "jx3-iks" "jx3-alicloud"
 )
+
+declare -a tfrepos=(
+  "jx3-terraform-gke"
+  "jx3-terraform-eks"
+  "jx3-terraform-azure"
+)
+
 export TMPDIR=/tmp/jx3-gitops-promote
 rm -rf $TMPDIR
 mkdir -p $TMPDIR
@@ -38,6 +45,18 @@ do
   jx gitops helmfile resolve --update
   jx gitops helmfile report
   git add * .lighthouse || true
+  git commit -a -m "chore: upgrade version stream" || true
+  git push || true
+done
+
+
+for r in "${tfrepos[@]}"
+do
+  echo "upgrading repository https://github.com/jx3-gitops-repositories/$r"
+  cd $TMPDIR
+  git clone https://github.com/jx3-gitops-repositories/$r.git
+  cd "$r"
+  jx gitops upgrade || true
   git commit -a -m "chore: upgrade version stream" || true
   git push || true
 done

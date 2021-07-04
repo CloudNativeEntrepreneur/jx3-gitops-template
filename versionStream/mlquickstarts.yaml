@@ -1,0 +1,101 @@
+apiVersion: project.jenkins-x.io/v1alpha1
+kind: Quickstarts
+spec:
+  defaultOwner: machine-learning-quickstarts
+  quickstarts:
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-pytorch-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-pytorch-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-pytorch-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-pytorch-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-pytorch-mlpc-cpu-service/archive/refs/tags/v1.3.1.zip
+    language: Python
+    name: ML-python-pytorch-mlpc-cpu-service
+    version: 1.3.1
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-pytorch-mlpc-cpu-training/archive/refs/tags/v1.3.1.zip
+    language: Python
+    name: ML-python-pytorch-mlpc-cpu-training
+    version: 1.3.1
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-tensorflow-mnist-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-tensorflow-mnist-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-tensorflow-mnist-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-tensorflow-mnist-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-pytorch-mlpc-gpu-service/archive/refs/tags/v1.3.1.zip
+    language: Python
+    name: ML-python-pytorch-mlpc-gpu-service
+    version: 1.3.1
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-pytorch-mlpc-gpu-training/archive/refs/tags/v1.3.1.zip
+    language: Python
+    name: ML-python-pytorch-mlpc-gpu-training
+    version: 1.3.1
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-svm-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-svm-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-svm-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-svm-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-xgb-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-xgb-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-xgb-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-xgb-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-lightgbm-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-lightgbm-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-lightgbm-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-lightgbm-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-knc-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-knc-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-knc-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-knc-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-lrc-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-lrc-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-lrc-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-lrc-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-rc-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-rc-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-rc-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-rc-cpu-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-nbc-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-nbc-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-nbc-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-nbc-training
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-rfc-cpu-service/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-rfc-cpu-service
+    version: 1.3.0
+  - downloadZipURL: https://github.com/machine-learning-quickstarts/ML-python-sklearn-rfc-cpu-training/archive/refs/tags/v1.3.0.zip
+    language: Python
+    name: ML-python-sklearn-rfc-cpu-training
+    version: 1.3.0

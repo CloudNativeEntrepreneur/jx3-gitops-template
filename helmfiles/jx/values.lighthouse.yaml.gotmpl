@@ -1,0 +1,28 @@
+gcJobs:
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+keeper:
+  resources:
+    limits:
+      cpu: '1'
+
+foghorn:
+  resources:
+    limits:
+      cpu: '1'
+
+tektoncontroller:
+  dashboardURL: "https://dashboard{{ .Values.jxRequirements.ingress.namespaceSubDomain }}{{ .Values.jxRequirements.ingress.domain }}"
+  resources:
+    limits:
+      cpu: "1"
+
+webhooks:
+  resources:
+    limits:
+      cpu: "1"
+      # may require more memory to perform the initial 'git clone' cmd for big repositories
+      memory: 1024Mi
+
+

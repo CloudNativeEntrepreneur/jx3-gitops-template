@@ -1,0 +1,13 @@
+# https://github.com/jenkins-x/cd-indicators/blob/main/charts/cd-indicators/values.yaml
+
+secrets:
+  postgres:
+    password:
+      secretKeyRef:
+        name: cd-indicators-postgresql-password
+# embedded postgresql chart
+# https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
+postgresql:
+  existingSecret: cd-indicators-postgresql-password
+  image:
+    tag: 13.1.0-debian-10-r38

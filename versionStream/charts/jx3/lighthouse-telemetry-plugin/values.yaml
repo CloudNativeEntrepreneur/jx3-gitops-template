@@ -1,0 +1,7 @@
+# https://github.com/jenkins-x/lighthouse-telemetry-plugin/blob/main/charts/lighthouse-telemetry-plugin/values.yaml
+
+pod:
+  env:
+    # export traces to our grafana tempo instance
+    TRACES_EXPORTER_TYPE: "jaeger:http:thrift"
+    TRACES_EXPORTER_ENDPOINT: "tempo.jx-observability:14268"

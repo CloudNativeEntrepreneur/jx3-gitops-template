@@ -19,8 +19,8 @@ spec:
       skip-unknown-contexts: false
     pr_status_base_url: ""
     squash_label: ""
-    target_url: http://dashboard{{ .Requirements.ingress.namespaceSubDomain }}{{ .Requirements.ingress.domain
-      }}
+    target_url: http://lighthouse{{ .Requirements.ingress.namespaceSubDomain }}{{
+      .Requirements.ingress.domain }}/merge/status
   plugins:
     entries:
     - config-updater
@@ -37,6 +37,13 @@ spec:
     - heart
     - cat
     - override
+  external_plugins:
+    Replace: true
+    entries:
+    - name: cd-indicators
+      endpoint: "http://cd-indicators.jx.svc.cluster.local/lighthouse/events"
+    - name: lighthouse-webui-plugin
+      endpoint: "http://lighthouse-webui-plugin.jx.svc.cluster.local/lighthouse/events"
   policy:
     protect_tested: true
   postsubmits:

@@ -13,5 +13,10 @@ releases:
   name: rbac-manager
   values:
   - jx-values.yaml
+- chart: ./charts/rbac
+  version: 0.0.1
+  name: rbac
+  values:
+  - jx-values.yaml
 templates: {}
 renderedvalues: {}

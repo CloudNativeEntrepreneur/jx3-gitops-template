@@ -42,6 +42,10 @@ spec:
     language: JavaScript
     name: node-http-watch-pipeline-activity
     version: 1.0.0+09c7ed32d
+  - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/node-postgresql/zip/c22ab16
+    language: JavaScript
+    name: node-postgresql
+    version: 1.0.0+c22ab16
   - downloadZipURL: https://codeload.github.com/jenkins-x-quickstarts/open-liberty/zip/c21a1e0bf
     language: Java
     name: open-liberty

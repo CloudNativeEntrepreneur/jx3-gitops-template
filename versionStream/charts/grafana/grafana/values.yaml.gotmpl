@@ -26,6 +26,14 @@ datasources:
         access: proxy
         url: http://loki.jx-observability:3100
         version: 1
+        jsonData:
+          derivedFields:
+            - datasourceUid: tempo
+              # matches variations of "traceID" fields, either in JSON or logfmt
+              matcherRegex: (?:[Tt]race[-_]?[Ii][Dd])[\\]?["]?[=:][ ]?[\\]?["]?(\w+)
+              name: TraceID
+              # url will be interpreted as query for the datasource
+              url: "$${__value.raw}"
       - name: Prometheus
         uid: prometheus
         type: prometheus
@@ -33,6 +41,19 @@ datasources:
         url: http://prometheus-server.jx-observability
         httpMethod: POST
         version: 1
+        jsonData:
+          exemplarTraceIdDestinations:
+            - name: TraceID
+              datasourceUid: tempo
+      - name: Tempo
+        uid: tempo
+        type: tempo
+        access: proxy
+        url: http://tempo.jx-observability:3100
+        version: 1
+        jsonData:
+          tracesToLogs:
+            datasourceUid: loki
 
 # automatically load all dashboards stored in ConfigMaps with the given label
 sidecar:
@@ -77,3 +98,7 @@ deploymentStrategy:
 
 testFramework:
   enabled: false
+
+# this fake password is not used (it will be replaced by the password from the external secret)
+# it is only set here to avoid Helm regenerating a random new one each time the templates are rendered
+adminPassword: fakepassword

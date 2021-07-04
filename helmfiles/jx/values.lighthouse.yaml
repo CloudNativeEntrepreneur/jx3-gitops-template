@@ -1,3 +1,0 @@
-gcJobs:
-  podAnnotations:
-    sidecar.istio.io/inject: "false"

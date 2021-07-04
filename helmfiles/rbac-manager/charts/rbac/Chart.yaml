@@ -1,0 +1,4 @@
+apiVersion: v1
+description: RBAC for cluster
+name: rbac
+version: 0.0.1

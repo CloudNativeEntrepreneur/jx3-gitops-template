@@ -47,3 +47,12 @@ repositories:
 - prefix: prometheus-community
   urls:
   - https://prometheus-community.github.io/helm-charts
+- prefix: osiris
+  urls:
+  - https://dailymotion-oss.github.io/osiris/charts
+- prefix: k8s-at-home
+  urls:
+  - https://k8s-at-home.com/charts
+- prefix: argocd
+  urls:
+  - https://argoproj.github.io/argo-helm

@@ -9,9 +9,11 @@ repositories:
   url: https://kubernetes.github.io/autoscaler
 - name: bitnami
   url: https://charts.bitnami.com/bitnami
+- name: descheduler
+  url: https://kubernetes-sigs.github.io/descheduler/
 releases:
 # - chart: autoscaler/cluster-autoscaler  # uncomment for AWS
-#   version: 9.9.0
+#   version: 9.9.2
 #   name: cluster-autoscaler
 #   values:
 #   - jx-values.yaml
@@ -22,5 +24,10 @@ releases:
   values:
   - jx-values.yaml
   - values.metrics-server.yaml
+- chart: descheduler/descheduler
+  version: 0.20.0
+  name: descheduler
+  values:
+  - jx-values.yaml
 templates: {}
 renderedvalues: {}

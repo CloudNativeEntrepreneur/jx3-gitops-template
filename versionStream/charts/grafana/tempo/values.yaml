@@ -1,0 +1,25 @@
+# https://github.com/grafana/helm-charts/blob/tempo-0.6.8/charts/tempo/values.yaml
+
+tempo:
+  # configure a 30 days retention by default
+  retention: 1440h
+  # enable opentelemetry protocol & jaeger receivers
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 0.0.0.0:55681
+        grpc:
+          endpoint: 0.0.0.0:4317
+    jaeger:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:14250
+        thrift_binary:
+          endpoint: 0.0.0.0:6832
+        thrift_compact:
+          endpoint: 0.0.0.0:6831
+        thrift_http:
+          endpoint: 0.0.0.0:14268
+persistence:
+  enabled: true

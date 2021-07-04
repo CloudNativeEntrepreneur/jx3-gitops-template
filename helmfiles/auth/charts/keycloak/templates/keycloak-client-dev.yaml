@@ -11,6 +11,10 @@ spec:
   client:
     clientId: dev
     clientType: confidential
+    defaultClientScopes:
+      - profile
+      - email
+      - roles
     directAccessGrantsEnabled: true
     standardFlowEnabled: true
     implicitFlowEnabled: false

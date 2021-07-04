@@ -1,158 +1,87 @@
 # jx3-gitops-template
 
-Jenkins X 3.x GitOps repository for a Kubernetes cluster with all the things you'll need preconfigured.
+Jenkins X 3.x GitOps repository for a Kubernetes cluster with all the things you'll need preconfigured, and probably some you don't.
+
+Meant to be a reference - start with an official jx3-gitops-repo, then come here and grab the extra helmfiles you need!
 
 This is a work in progress... There are still some pending features:
 
 1. SQL backups for Keycloak DB
 1. Keycloak Backup CRD
-1. Velero chart and Velero Backups
 1. Strimzi Kafka Operator
 1. Strimzi Kafka cluster to back knative-eventing
 
 ** After forking, do a global search for "example.com" - making these variables is another todo :)
 
-# What this template comes with
+## Creating/upgrading cloud resources
 
-## helmfiles/auth
+Modify the `jx-requirements.yml` file
 
-Keycloak operator for creating Keycloak and configuring Keycloak instances, and a Keycloak instance configured with a postgres-operator backed DB. Exposed via Istio.
+Now git commit and push any changes...
 
-## helmfiles/cert-manager
+```bash 
+git add *
+git commit -a -m "chore: Jenkins X changes"
+```
+
+## System Components
+
+### helmfiles/auth
+
+An operator for creating Keycloak and configuring Keycloak instances - this allows you to do things like declaratively create new clients with Preview environments.
+
+Oauth2Proxy for use with Istio EnvoyFilters and Keycloak
+
+Redis session store
+
+### helmfiles/cert-manager
 
 Automatically provision TLS certificates from LetsEncrypt.
 
-## helmfiles/istio-operator
+### helmfiles/istio-operator
 
-The istio operator chart installs the Istio operator, which allows you to configure Istio declaratively
+The istio operator chart installs the istio operator, which allows you to configure Istio declarivitely
 
-## helmfiles/istio-system
+### helmfiles/istio-system
 
-Istio configuration and Certificates that will be used by Istio (most likely all of them, except those managed by Knative Serving)
+Istio configuration and Certificates that will be used by istio (most likely all of them, except those managed by Knative Serving)
 
-## helmfiles/jx
+### helmfiles/jx
 
 JX3 with custom values for istio integration
 
-## helmfiles/knative-eventing
+### helmfiles/knative-eventing
 
 Configure Knative Eventing via the Knative operator
 
-## helmfiles/knative-operator
+### helmfiles/knative-operator
 
-Install and configure the Knative operator
+Install and configure the knative operator
 
-## helmfiles/knative-serving
+### helmfiles/knative-serving
 
 Configure Knative Serving via the Knative operator
 
-## helmfiles/monitor
+### helmfiles/monitor
 
 Install and configure Prometheus Stack for monitoring/alerting, and Loki for Centralized Logging, and Grafana as a dashboard.
 
-## helmfiles/olm
+### helmfiles/olm
 
-Install OLM which is used to install the Keycloak Operator. If there were a good chart for Keycloak operator I probably wouldn't use this, but it's the recommended way.
+Install OLM which is used to install the Keycloak Operator. If there were a good chart for keycloak operator I probably wouldn't use this, but it's the recommended way.
 
-## helmfiles/postgres-operator
+### helmfiles/postgres-operator
 
-Installs the Postgres Operator which allows you to declaratively create Postgres instances.
+Installs the Postgres Operator which allows you to declaritively create postgres instances.
 
-## helmfiles/rbac-manager
+### helmfiles/rbac-manager
 
 CRDs for declaratively controlling RBAC for your cluster.
 
-## helmfiles/secret-infra
+### helmfiles/secret-infra
 
-Kubernetes External Secrets to read from Vault or GSM, and Pusher Wave for secret rotation.
+Kubernetes External Secrets, and Pusher Wave for secret rotation.
 
 ## tekton-pipelines
 
 Tekton, which JX uses to run pipelines.
-
-# Secrets
-
-## Decrypt Existing Secrets
-
-```
-make decrypt-secrets
-```
-
-To Decrypt only a subset of secrets, use `SECRET_DIR`
-
-```
-SECRET_DIR=secret-encrypted/monitor make decrypt-secrets
-```
-
-## Encrypt Existing Secrets
-
-```
-make encrypt-secrets
-```
-
-To Encrypt only a subset of secrets, use `SECRET_DIR`
-
-```
-SECRET_DIR=secret/monitor make encrypt-secrets
-```
-
-
-## Sync Existing Secrets
-
-```
-make sync-secrets
-```
-
-To Sync only a subset of secrets, use `SECRET_DIR`
-
-```
-SECRET_DIR=secret/monitor make sync-secrets
-```
-
-TODO: In a future version syncing will be done in the pipeline automatically
-
-## Connecting to Vault
-
-From https://jenkins-x.io/v3/admin/guides/secrets/vault/
-
-In a terminal, run:
-
-```bash
-jx secret vault portforward
-```
-
-Then, in a second terminal
-
-```bash
-export VAULT_TOKEN=$(kubectl get secrets vault-unseal-keys  -n jx-vault -o jsonpath={.data.vault-root} | base64 --decode)
-
-# Tell the CLI that the Vault Cert is signed by a custom CA
-kubectl get secret vault-tls -n jx-vault -o jsonpath="{.data.ca\.crt}" | base64 --decode > $PWD/secret/vault/vault-ca.crt
-export VAULT_CACERT=$PWD/secret/vault/vault-ca.crt
-
-# Tell the CLI where Vault is listening (the certificate has 127.0.0.1 as well as alternate names)
-export VAULT_ADDR=https://127.0.0.1:8200
-```
-
-You can now use the Vault CLI or Safe:
-
-Vault CLI:
-
-```bash
-# Now we can use the vault CLI to list/read/write secrets...
-                                           
-# List all the current secrets
-vault kv list secret
-
-# Lets store a secert
-vault kv put secret/mything foo=bar whatnot=cheese
-```
-
-Safe:
-
-```bash
-safe ls
-safe ls secret
-
-safe get secret/jx/adminUser:password
-```

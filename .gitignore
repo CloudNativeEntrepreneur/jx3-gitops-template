@@ -18,6 +18,12 @@
 .idea 
 
 # you could check these files in if you wanted to; but they are generally temporary files used
-# to generate the config-root directories
+# to generate the config-root directories
 build
 
+# you may want to avoid checking in terraform state in case it has passwords and we are public repo
+#*.tfstate
+.terraform
+
+/secret/
+/.tmp/

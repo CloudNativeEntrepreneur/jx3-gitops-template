@@ -1,0 +1,52 @@
+apiVersion: rbacmanager.reactiveops.io/v1beta1
+kind: RBACDefinition
+metadata:
+  name: cluster-rbac
+rbacBindings:
+  
+  - name: cluster-admins
+    subjects:
+      - kind: User
+        name: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:user/exampleadminusername
+    clusterRoleBindings:
+      - clusterRole: cluster-admin
+  
+  - name: cluster-readonly-users
+    subjects:
+      - kind: User
+        name: arn:aws:iam::{{ .Values.jxRequirements.cluster.project }}:user/exampleusername
+    roleBindings:
+      - clusterRole: view
+        namespace: auth
+      - clusterRole: view
+        namespace: cert-manager
+      - clusterRole: view
+        namespace: elastic-system
+      - clusterRole: view
+        namespace: istio-operator
+      - clusterRole: view
+        namespace: istio-system
+      - clusterRole: view
+        namespace: jx
+      - clusterRole: view
+        namespace: jx-staging
+      - clusterRole: view
+        namespace: jx-vault
+      - clusterRole: view
+        namespace: knative-eventing
+      - clusterRole: view
+        namespace: knative-operator
+      - clusterRole: view
+        namespace: knative-serving
+      - clusterRole: view
+        namespace: kube-system
+      - clusterRole: view
+        namespace: monitor
+      - clusterRole: view
+        namespace: postgres-operator
+      - clusterRole: view
+        namespace: rbac-manager
+      - clusterRole: view
+        namespace: secret-infra
+      - clusterRole: view
+        namespace: tekton-pipelines

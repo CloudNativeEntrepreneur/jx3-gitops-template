@@ -1,0 +1,4 @@
+apiVersion: v1
+name: pipeline-secrets
+description: Secrets for use in pipelines
+version: 1.0.0

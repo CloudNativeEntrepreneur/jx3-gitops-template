@@ -1,0 +1,48 @@
+# https://github.com/jenkins-x-plugins/lighthouse-webui-plugin/blob/main/charts/lighthouse-webui-plugin/values.yaml
+
+ingress:
+  enabled: true
+  annotations:
+    # lets enable basic auth by default
+
+    # type of authentication
+    nginx.ingress.kubernetes.io/auth-type: basic
+    # name of the secret that contains the user/password definitions
+    nginx.ingress.kubernetes.io/auth-secret: jx-basic-auth-htpasswd
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Jenkins X Lighthouse Dashboard'
+
+  apiVersion: "networking.k8s.io/v1"
+
+  hosts:
+  - "lighthouse{{ .Values.jxRequirements.ingress.namespaceSubDomain | default "." }}{{ .Values.jxRequirements.ingress.domain | default "cluster.local" }}"
+
+  tls:
+    enabled: {{ .Values.jxRequirements.ingress.tls.enabled }}
+    secrets:
+{{- if and (.Values.jxRequirements.ingress.tls.enabled) (hasKey .Values.jxRequirements.ingress "tls") (hasKey .Values.jxRequirements.ingress.tls "secretName") }}
+      "{{ .Values.jxRequirements.ingress.tls.secretName }}": {}
+{{- else if .Values.jxRequirements.ingress.tls.production }}
+      "tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-p": {}
+{{- else }}
+      "tls-{{ .Values.jxRequirements.ingress.domain | replace "." "-" }}-s": {}
+{{- end }}
+
+config:
+
+  # build a link for the event trace, to our Grafana instance running in the jx-observability namespace
+  # Note that we have to fix the ingress.namespaceSubDomain with the same logic used in jx-gitops:
+  # https://github.com/jenkins-x-plugins/jx-gitops/blob/v0.2.47/pkg/cmd/helmfile/resolve/resolve.go#L236
+  eventTraceURLTemplate: >-
+    http://grafana{{ .Values.jxRequirements.ingress.namespaceSubDomain | replace "jx" "jx-observability" }}{{ .Values.jxRequirements.ingress.domain }}/explore?left=%5B%22now%22,%22now%22,%22Tempo%22,%7B%22query%22:%22{{`{{.TraceID}}`}}%22%7D%5D
+
+  # don't store more than 1k events by default
+  store:
+    gc:
+      maxEventsToKeep: 1000
+
+persistence:
+  enabled: true
+deployment:
+  strategy:
+    type: Recreate

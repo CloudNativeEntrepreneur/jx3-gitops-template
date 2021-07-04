@@ -155,7 +155,7 @@ $JX_SCM repo clone ${GH_CLONE_HOST}${GH_OWNER}/cluster-$CLUSTER_NAME-dev
 
 pushd `pwd`/cluster-${CLUSTER_NAME}-dev
 
-      git pull origin master
+      git pull origin main
       # use the changes from this PR in the version stream for the cluster repo when resolving the helmfile
       rm -rf versionStream
       cp -R $SOURCE_DIR versionStream
@@ -207,6 +207,19 @@ then
 else
       $JX_SCM repo create ${GH_HOST}${GH_OWNER}/infra-$CLUSTER_NAME-dev --template $GIT_TEMPLATE_SERVER_URL/${GITOPS_INFRA_PROJECT} --private --confirm
       sleep 15
+
+
+      echo "lets upgrade the terraform versions from the version stream"
+      $JX_SCM repo clone ${GH_CLONE_HOST}${GH_OWNER}/infra-$CLUSTER_NAME-dev
+
+      pushd `pwd`/infra-${CLUSTER_NAME}-dev
+            # lets use the latest terraform versions
+            jx gitops upgrade --version-stream-dir $SOURCE_DIR
+
+            # lets add / commit any cloud resource specific changes
+            git commit -a -m "chore: terraform version changes" || true
+            git push
+      popd
 fi
 
 if [ -z "$TERRAFORM_FILE" ]

@@ -9,10 +9,9 @@ repositories:
   url: https://jenkins-x-charts.github.io/istio/
 releases:
 - chart: jx-istio/istio-operator
-  version: 1.7.0
+  version: 1.9.5
   name: istio-operator
   values:
   - jx-values.yaml
-  - values.yaml
 templates: {}
 renderedvalues: {}

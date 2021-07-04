@@ -1,6 +1,11 @@
-dummy: value
+webhook:
+  # specifies the name of an optional kubernetes secret to mount environment variables from for things like HTTP proxy
+  envFromSecret: "jx-boot-job-env-vars"
 
 controller:
+  # specifies the name of an optional kubernetes secret to mount environment variables from for things like HTTP proxy
+  envFromSecret: "jx-boot-job-env-vars"
+
   pod:
     annotations:
       prometheus.io/scrape: "true"
